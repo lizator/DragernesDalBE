@@ -11,7 +11,7 @@ public class ProfileDAO {
     public ProfileDAO() {
     }
 
-    public ProfileDTO getProfileByEmail(String email) throws Exception{
+    public ProfileDTO getProfileByEmail(String email){
         try {
             db.connect();
             ResultSet rs = db.query("SELECT * FROM user WHERE email = '" + email + "';");
@@ -24,7 +24,8 @@ public class ProfileDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new SQLException("Error in Database");
+            return null;
+            //throw new SQLException("Error in Database");
         }
 
     }
