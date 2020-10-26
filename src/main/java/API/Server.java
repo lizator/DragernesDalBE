@@ -23,3 +23,4 @@ class GreetingsController{
         return "Hello " + StringUtils.capitalize(name) + "!";
     }
 }
+

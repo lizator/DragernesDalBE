@@ -3,16 +3,14 @@ package dal.dto;
 import java.util.PriorityQueue;
 
 public class ProfileDTO {
-    private int id;
-    private String firstName;
-    private String lastName;
-    private String email;
-    private int phone;
-
-    private String passHash;
-    private String salt;
-
-    private boolean admin;
+    private int id = 0;
+    private String firstName = "";
+    private String lastName = "";
+    private String email = "";
+    private int phone = 0;
+    private String passHash = "";
+    private String salt = "";
+    private boolean admin = false;
 
     public ProfileDTO (){
     }
