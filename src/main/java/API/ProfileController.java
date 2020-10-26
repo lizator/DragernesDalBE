@@ -18,7 +18,6 @@ public class ProfileController {
     @PostMapping(value = "/user/create", consumes = "application/json", produces = "application/json")
     public ProfileDTO createUser(@RequestBody ProfileDTO dto) throws WebApplicationException {
         if (!dao.getEmailExists(dto.getEmail())) {
-            System.out.println("In here");
             System.out.println(dao.getEmailExists(dto.getEmail()));
             return dao.createUser(dto);
         }
