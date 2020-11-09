@@ -1,7 +1,5 @@
 package dal.dto;
 
-import java.util.PriorityQueue;
-
 public class ProfileDTO {
     private int id = 0;
     private String firstName = "";
