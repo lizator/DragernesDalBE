@@ -14,10 +14,10 @@ public class CharacterDAO {
 
     public CharacterDAO(){}
 
-    public List<CharacterDTO> getCharactersByID(int id){
+    public List<CharacterDTO> getCharactersByUserID(int userID){
         try {
             db.connect();
-            ResultSet rs = db.query("SELECT * FROM character WHERE iduser = " + id + " AND status = 'aktiv';");
+            ResultSet rs = db.query("SELECT * FROM companiondb.character WHERE iduser = " + userID + " AND status = 'aktiv';");
             List<CharacterDTO> charList = new ArrayList<>();
             while (rs.next()) {
                 CharacterDTO character = new CharacterDTO();
@@ -35,6 +35,50 @@ public class CharacterDAO {
         }
     }
 
+    public CharacterDTO getCharacterByID(int characterID){
+        try {
+            db.connect();
+            ResultSet rs = db.query("SELECT * FROM companiondb.character WHERE idcharacter = " + characterID + " AND status = 'aktiv';");
+            List<CharacterDTO> charList = new ArrayList<>();
+            rs.next();
+            CharacterDTO character = new CharacterDTO();
+            setCharacter(rs, character);
+            charList.add(character);
+            rs.close();
+            db.close();
+            return character;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new WebApplicationException("Error in DB with character");
+            //throw new SQLException("Error in Database");
+        }
+    }
+
+    public CharacterDTO createCharacter(CharacterDTO dto){
+        try {
+            dto.setIdcharacter(getNextID()); //Get ID assigned
+            dto.setStatus("aktiv");
+            db.connect();
+            db.update("INSERT INTO companiondb.character (idcharater, iduser, " +
+                    "namecharacter, idrace, age, status) VALUES ('"
+                    + dto.getIdcharacter() + "', '"
+                    + dto.getIduser() + "', '"
+                    + dto.getName() + "', '"
+                    + dto.getIdrace() + "', '"
+                    + dto.getAge() + "', '"
+                    + dto.getStatus() + "');");
+            db.close();
+
+            CharacterDTO character = getCharacterByID(dto.getIdcharacter());
+            return character;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new WebApplicationException("Error in DB: Creating character");
+            //throw new SQLException("Error in Database");
+        }
+    }
 
 
     private void setCharacter(ResultSet rs, CharacterDTO character) throws SQLException {
@@ -49,6 +93,23 @@ public class CharacterDAO {
         character.setTimestamp(rs.getTime("timestamp"));
         character.setStrength(rs.getInt("strength"));
         character.setHealth(rs.getInt("health"));
+    }
+
+    public int getNextID() throws WebApplicationException{ //Returns true if email already exists in system
+        try {
+            db.connect();
+            ResultSet rs = db.query("SELECT MAX(idCharacter) AS max FROM companiondb.character;");
+            rs.next();
+            int max = rs.getInt("max");
+            rs.close();
+            db.close();
+            return max + 1;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new WebApplicationException("Error in DB");
+        }
+
     }
 
 }
