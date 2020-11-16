@@ -17,7 +17,7 @@ public class CharacterDAO {
     public List<CharacterDTO> getCharactersByUserID(int userID){
         try {
             db.connect();
-            ResultSet rs = db.query("SELECT * FROM companiondb.character WHERE iduser = " + userID + " AND status = 'aktiv';");
+            ResultSet rs = db.query("SELECT * FROM companiondb.characterInfoView WHERE iduser = " + userID + " AND status = 'aktiv';");
             List<CharacterDTO> charList = new ArrayList<>();
             while (rs.next()) {
                 CharacterDTO character = new CharacterDTO();
@@ -38,7 +38,7 @@ public class CharacterDAO {
     public CharacterDTO getCharacterByID(int characterID){
         try {
             db.connect();
-            ResultSet rs = db.query("SELECT * FROM companiondb.character WHERE idcharacter = " + characterID + " AND status = 'aktiv';");
+            ResultSet rs = db.query("SELECT * FROM companiondb.characterInfoView WHERE idcharacter = " + characterID + " AND status = 'aktiv';");
             List<CharacterDTO> charList = new ArrayList<>();
             rs.next();
             CharacterDTO character = new CharacterDTO();
@@ -86,6 +86,7 @@ public class CharacterDAO {
         character.setIdcharacter(rs.getInt("idcharacter"));
         character.setName(rs.getString("namecharacter"));
         character.setIdrace(rs.getInt("idrace"));
+        character.setRaceName(rs.getString("racename"));
         character.setAge(rs.getInt("age"));
         character.setCurrentep(rs.getInt("currentep"));
         character.setStatus(rs.getString("status"));
