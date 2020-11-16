@@ -10,7 +10,7 @@ import java.util.List;
 public class CharacterController {
     CharacterDAO dao = new CharacterDAO();
 
-    @GetMapping(value = "/character/byID/{characterid}", produces = "application/json")
+    @GetMapping(value = "/character/byID/{characterid}", produces = "application/json") //Works
     public CharacterDTO getCharacterByID(@PathVariable int characterid){
         return dao.getCharacterByID(characterid);
     }
