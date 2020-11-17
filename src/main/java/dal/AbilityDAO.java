@@ -12,7 +12,7 @@ import java.util.List;
 public class AbilityDAO {
     private final SQLDatabaseIO db = new SQLDatabaseIO("kamel", "dreng", "runerne.dk", 8003);
 
-    public List<AbilityDTO> getabilitiesByCharacterID(int characterid) {
+    public List<AbilityDTO> getAbilitiesByCharacterID(int characterid) {
         try {
             db.connect();
             ResultSet rs = db.query("SELECT * FROM companiondb.owningAbilitiesView WHERE idcharacter = " + characterid + ";");
