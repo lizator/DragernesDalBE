@@ -1,6 +1,7 @@
 package API;
 
 import dal.MainDAO;
+import dal.dto.MainDTO;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.util.StringUtils;
@@ -19,7 +20,7 @@ public class Server {
 class MainController{
     MainDAO dao = new MainDAO();
     @RequestMapping("/main/tableupdate/{tableName}")
-    String tableUpdate(@PathVariable String tableName){
+    MainDTO tableUpdate(@PathVariable String tableName){
         return dao.getLastTimeTableModified(tableName);
     }
 
