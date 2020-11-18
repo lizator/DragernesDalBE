@@ -19,8 +19,8 @@ public class Server {
 @RestController
 class MainController{
     MainDAO dao = new MainDAO();
-    @RequestMapping("/main/tableupdate/{tableName}")
-    MainDTO tableUpdate(@PathVariable String tableName){
+    @RequestMapping(value = "/main/tableupdate/{tableName}", produces = "application/json")
+    public MainDTO tableUpdate(@PathVariable String tableName){
         return dao.getLastTimeTableModified(tableName);
     }
 
