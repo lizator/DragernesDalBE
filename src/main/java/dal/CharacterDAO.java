@@ -60,7 +60,8 @@ public class CharacterDAO {
             dto.setIdcharacter(getNextID()); //Get ID assigned
             dto.setStatus("aktiv");
             db.connect();
-            db.update("INSERT INTO companiondb.character (idcharater, iduser, " +
+            db.update("START TRANSACTION;");
+            db.update("INSERT INTO companiondb.character (idcharacter, iduser, " +
                     "namecharacter, idrace, age, status) VALUES ('"
                     + dto.getIdcharacter() + "', '"
                     + dto.getIduser() + "', '"
@@ -68,6 +69,17 @@ public class CharacterDAO {
                     + dto.getIdrace() + "', '"
                     + dto.getAge() + "', '"
                     + dto.getStatus() + "');");
+            db.update("INSERT INTO companiondb.inventory (iditem, idcharacter, itemname, amount) " +
+                    "VALUES " +
+                    "(1, " + dto.getIdcharacter() + ", 'Guld', 0), " +
+                    "(2, " + dto.getIdcharacter() + ", 'Sølv', 0), " +
+                    "(3, " + dto.getIdcharacter() + ", 'Kobber', 0);");
+            ResultSet rs = db.query("SELECT * FROM companiondb.races WHERE idrace = " + dto.getIdrace());
+            rs.next();
+            int startingAbilityID = rs.getInt("start");
+            db.update("INSERT INTO companiondb.ownedabilities (idcharacter, idability) VALUES ('" +
+                    dto.getIdcharacter() + "', '" + startingAbilityID + "');");
+            db.update("COMMIT;");
             db.close();
 
             CharacterDTO character = getCharacterByID(dto.getIdcharacter());
