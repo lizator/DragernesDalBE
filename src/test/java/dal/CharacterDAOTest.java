@@ -11,11 +11,11 @@ public class CharacterDAOTest {
     public void createCharacter() {
         CharacterDTO dto = new CharacterDTO();
         dto.setIdcharacter(dao.getNextID());
-        dto.setName("Testing creation");
-        dto.setStatus("aktiv");
+        dto.setName("Testing creation2");
         dto.setAge(72);
         dto.setIdrace(2); //Elver
         dto.setIduser(2); //test@gmail.com
+        dto.setBackground("Testing ting and stuff");
         CharacterDTO ret = dao.createCharacter(dto);
         assertEquals(ret.getAge(), 72);
     }

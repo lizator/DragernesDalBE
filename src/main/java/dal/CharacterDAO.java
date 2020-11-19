@@ -62,13 +62,14 @@ public class CharacterDAO {
             db.connect();
             db.update("START TRANSACTION;");
             db.update("INSERT INTO companiondb.character (idcharacter, iduser, " +
-                    "namecharacter, idrace, age, status) VALUES ('"
+                    "namecharacter, idrace, age, status, background) VALUES ('"
                     + dto.getIdcharacter() + "', '"
                     + dto.getIduser() + "', '"
                     + dto.getName() + "', '"
                     + dto.getIdrace() + "', '"
                     + dto.getAge() + "', '"
-                    + dto.getStatus() + "');");
+                    + dto.getStatus() + "', '"
+                    + dto.getBackground() + "');");
             db.update("INSERT INTO companiondb.inventory (iditem, idcharacter, itemname, amount) " +
                     "VALUES " +
                     "(1, " + dto.getIdcharacter() + ", 'Guld', 0), " +
@@ -106,6 +107,7 @@ public class CharacterDAO {
         character.setTimestamp(rs.getTime("timestamp"));
         character.setStrength(rs.getInt("strength"));
         character.setHealth(rs.getInt("health"));
+        character.setBackground(rs.getString("background"));
     }
 
     public int getNextID() throws WebApplicationException{ //Returns true if email already exists in system
