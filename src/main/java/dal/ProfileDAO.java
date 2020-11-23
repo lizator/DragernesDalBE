@@ -67,6 +67,24 @@ public class ProfileDAO {
 
     }
 
+//    public ProfileDTO createUser(ProfileDTO dto) throws WebApplicationException{
+//        try {
+//            dto.setId(getNextID()); //Get ID assigned
+//            db.connect();
+//            db.update("INSERT INTO user (idUser, firstName, secondName, email, phone, passHash, salt) VALUES (?,?,?,?,?,?,?)",new String[]{dto.getId()+"",dto.getFirstName(),dto.getLastName(),dto.getEmail(),dto.getPhone()+"",dto.getPassHash(),dto.getSalt()});
+//
+//            ProfileDTO user = getProfileByEmail(dto.getEmail());
+//            db.close();
+//            return user;
+//
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//            throw new WebApplicationException("Error in DB");
+//            //throw new SQLException("Error in Database");
+//        }
+//
+//    }
+
     public ProfileDTO createUser(ProfileDTO dto) throws WebApplicationException{
         try {
             dto.setId(getNextID()); //Get ID assigned
@@ -91,7 +109,6 @@ public class ProfileDAO {
         }
 
     }
-
 
     public boolean getConnected() throws SQLException {
         db.connect();

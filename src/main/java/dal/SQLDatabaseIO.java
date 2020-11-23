@@ -57,6 +57,18 @@ public class SQLDatabaseIO {
      * @param query Database navn
      * @throws SQLException
      */
+    public void update(String query, String[] strings) throws SQLException {
+        if(connected){
+            stmt = conn.createStatement();
+            stmt.executeUpdate("use "+db_name);
+            PreparedStatement stmt = conn.prepareStatement(query); // SELECT * FROM user WHERE email = ?
+            for (int i = 0; i < strings.length; i++) {
+                stmt.setString(i + 1, strings[i]);
+            }
+            stmt.executeUpdate();
+        }
+    }
+
     public void update(String query) throws SQLException {
         if(connected){
             stmt = conn.createStatement();

@@ -60,27 +60,19 @@ public class CharacterDAO {
             dto.setIdcharacter(getNextID()); //Get ID assigned
             dto.setStatus("aktiv");
             db.connect();
-            db.update("START TRANSACTION;");
+            db.update("START TRANSACTION;",new String[]{});
             db.update("INSERT INTO companiondb.character (idcharacter, iduser, " +
-                    "namecharacter, idrace, age, status, background) VALUES ('"
-                    + dto.getIdcharacter() + "', '"
-                    + dto.getIduser() + "', '"
-                    + dto.getName() + "', '"
-                    + dto.getIdrace() + "', '"
-                    + dto.getAge() + "', '"
-                    + dto.getStatus() + "', '"
-                    + dto.getBackground() + "');");
+                    "namecharacter, idrace, age, status, background) VALUES (?, ?, ?, ?, ?, ?, ?)",new String[] {dto.getIdcharacter()+"",dto.getIduser()+"",dto.getName(),dto.getIdrace()+"",dto.getAge()+"",dto.getStatus(),dto.getBackground()});
             db.update("INSERT INTO companiondb.inventory (iditem, idcharacter, itemname, amount) " +
                     "VALUES " +
-                    "(1, " + dto.getIdcharacter() + ", 'Guld', 0), " +
-                    "(2, " + dto.getIdcharacter() + ", 'Sølv', 0), " +
-                    "(3, " + dto.getIdcharacter() + ", 'Kobber', 0);");
+                    "(1, ?, 'Guld', 0), " +
+                    "(2, ?, 'Sølv', 0), " +
+                    "(3, ?, 'Kobber', 0)",new String[]{dto.getIdcharacter()+"",dto.getIdcharacter()+"",dto.getIdcharacter()+""});
             ResultSet rs = db.query("SELECT * FROM companiondb.races WHERE idrace = ?", new String[] {dto.getIdrace()+""});
             rs.next();
             int startingAbilityID = rs.getInt("start");
-            db.update("INSERT INTO companiondb.ownedabilities (idcharacter, idability) VALUES ('" +
-                    dto.getIdcharacter() + "', '" + startingAbilityID + "');");
-            db.update("COMMIT;");
+            db.update("INSERT INTO companiondb.ownedabilities (idcharacter, idability) VALUES (?, ?)",new String[]{dto.getIdcharacter()+"",startingAbilityID+""});
+            db.update("COMMIT;", new String[]{});
             db.close();
 
             CharacterDTO character = getCharacterByID(dto.getIdcharacter());
