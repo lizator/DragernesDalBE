@@ -15,7 +15,7 @@ public class AbilityDAO {
     public List<AbilityDTO> getAbilitiesByCharacterID(int characterid) {
         try {
             db.connect();
-            ResultSet rs = db.query("SELECT * FROM companiondb.owningAbilitiesView WHERE idcharacter = " + characterid + ";");
+            ResultSet rs = db.query("SELECT * FROM companiondb.owningAbilitiesView WHERE idcharacter = ?", new String[] {characterid+""});
             List<AbilityDTO> abilityList = new ArrayList<>();
             while (rs.next()) {
                 AbilityDTO ability = new AbilityDTO();

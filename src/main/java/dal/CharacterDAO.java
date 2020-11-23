@@ -17,7 +17,7 @@ public class CharacterDAO {
     public List<CharacterDTO> getCharactersByUserID(int userID){
         try {
             db.connect();
-            ResultSet rs = db.query("SELECT * FROM companiondb.characterInfoView WHERE iduser = " + userID + " AND status = 'aktiv';");
+            ResultSet rs = db.query("SELECT * FROM companiondb.characterInfoView WHERE iduser = ? AND status = 'aktiv'", new String[] {userID+""});
             List<CharacterDTO> charList = new ArrayList<>();
             while (rs.next()) {
                 CharacterDTO character = new CharacterDTO();
@@ -38,7 +38,7 @@ public class CharacterDAO {
     public CharacterDTO getCharacterByID(int characterID){
         try {
             db.connect();
-            ResultSet rs = db.query("SELECT * FROM companiondb.characterInfoView WHERE idcharacter = " + characterID + " AND status = 'aktiv';");
+            ResultSet rs = db.query("SELECT * FROM companiondb.characterInfoView WHERE idcharacter = ? AND status = 'aktiv'", new String[] {characterID+""});
             List<CharacterDTO> charList = new ArrayList<>();
             rs.next();
             CharacterDTO character = new CharacterDTO();
@@ -75,7 +75,7 @@ public class CharacterDAO {
                     "(1, " + dto.getIdcharacter() + ", 'Guld', 0), " +
                     "(2, " + dto.getIdcharacter() + ", 'Sølv', 0), " +
                     "(3, " + dto.getIdcharacter() + ", 'Kobber', 0);");
-            ResultSet rs = db.query("SELECT * FROM companiondb.races WHERE idrace = " + dto.getIdrace());
+            ResultSet rs = db.query("SELECT * FROM companiondb.races WHERE idrace = ?", new String[] {dto.getIdrace()+""});
             rs.next();
             int startingAbilityID = rs.getInt("start");
             db.update("INSERT INTO companiondb.ownedabilities (idcharacter, idability) VALUES ('" +
@@ -114,6 +114,7 @@ public class CharacterDAO {
         try {
             db.connect();
             ResultSet rs = db.query("SELECT MAX(idCharacter) AS max FROM companiondb.character;");
+            //ResultSet rs = db.query("SELECT * FROM user WHERE email = ?", new String[] { email });
             rs.next();
             int max = rs.getInt("max");
             rs.close();

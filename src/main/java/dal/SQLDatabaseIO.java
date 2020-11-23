@@ -86,6 +86,19 @@ public class SQLDatabaseIO {
         return result;
     }
 
+    //Not safe method, use other one
+    public ResultSet query(String query) throws SQLException {
+        ResultSet result = null;
+        if(!connected){
+            System.out.println("Connect to a DB first");
+        } else{
+            stmt = conn.createStatement();
+            stmt.executeUpdate("use "+db_name);
+            result = stmt.executeQuery(query);
+        }
+        return result;
+    }
+
     /**
      * Close connection to mysql server
      * @throws SQLException
