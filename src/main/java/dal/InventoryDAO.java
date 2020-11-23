@@ -15,7 +15,7 @@ public class InventoryDAO {
     public List<InventoryDTO> getInventoryByCharacterID(int characterid) {
         try {
             db.connect();
-            ResultSet rs = db.query("SELECT * FROM companiondb.inventory WHERE idcharacter = " + characterid + ";");
+            ResultSet rs = db.query("SELECT * FROM companiondb.inventory WHERE idcharacter = ?", new String[]{characterid+""});
             List<InventoryDTO> itemList = new ArrayList<>();
             while (rs.next()) {
                 InventoryDTO item = new InventoryDTO();

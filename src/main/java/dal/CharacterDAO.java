@@ -17,7 +17,7 @@ public class CharacterDAO {
     public List<CharacterDTO> getCharactersByUserID(int userID){
         try {
             db.connect();
-            ResultSet rs = db.query("SELECT * FROM companiondb.characterInfoView WHERE iduser = " + userID + " AND status = 'aktiv';");
+            ResultSet rs = db.query("SELECT * FROM companiondb.characterInfoView WHERE iduser = ? AND status = 'aktiv'", new String[] {userID+""});
             List<CharacterDTO> charList = new ArrayList<>();
             while (rs.next()) {
                 CharacterDTO character = new CharacterDTO();
@@ -38,7 +38,7 @@ public class CharacterDAO {
     public CharacterDTO getCharacterByID(int characterID){
         try {
             db.connect();
-            ResultSet rs = db.query("SELECT * FROM companiondb.characterInfoView WHERE idcharacter = " + characterID + " AND status = 'aktiv';");
+            ResultSet rs = db.query("SELECT * FROM companiondb.characterInfoView WHERE idcharacter = ? AND status = 'aktiv'", new String[] {characterID+""});
             List<CharacterDTO> charList = new ArrayList<>();
             rs.next();
             CharacterDTO character = new CharacterDTO();
@@ -60,27 +60,19 @@ public class CharacterDAO {
             dto.setIdcharacter(getNextID()); //Get ID assigned
             dto.setStatus("aktiv");
             db.connect();
-            db.update("START TRANSACTION;");
+            db.update("START TRANSACTION;",new String[]{});
             db.update("INSERT INTO companiondb.character (idcharacter, iduser, " +
-                    "namecharacter, idrace, age, status, background) VALUES ('"
-                    + dto.getIdcharacter() + "', '"
-                    + dto.getIduser() + "', '"
-                    + dto.getName() + "', '"
-                    + dto.getIdrace() + "', '"
-                    + dto.getAge() + "', '"
-                    + dto.getStatus() + "', '"
-                    + dto.getBackground() + "');");
+                    "namecharacter, idrace, age, status, background) VALUES (?, ?, ?, ?, ?, ?, ?)",new String[] {dto.getIdcharacter()+"",dto.getIduser()+"",dto.getName(),dto.getIdrace()+"",dto.getAge()+"",dto.getStatus(),dto.getBackground()});
             db.update("INSERT INTO companiondb.inventory (iditem, idcharacter, itemname, amount) " +
                     "VALUES " +
-                    "(1, " + dto.getIdcharacter() + ", 'Guld', 0), " +
-                    "(2, " + dto.getIdcharacter() + ", 'Sølv', 0), " +
-                    "(3, " + dto.getIdcharacter() + ", 'Kobber', 0);");
-            ResultSet rs = db.query("SELECT * FROM companiondb.races WHERE idrace = " + dto.getIdrace());
+                    "(1, ?, 'Guld', 0), " +
+                    "(2, ?, 'Sølv', 0), " +
+                    "(3, ?, 'Kobber', 0)",new String[]{dto.getIdcharacter()+"",dto.getIdcharacter()+"",dto.getIdcharacter()+""});
+            ResultSet rs = db.query("SELECT * FROM companiondb.races WHERE idrace = ?", new String[] {dto.getIdrace()+""});
             rs.next();
             int startingAbilityID = rs.getInt("start");
-            db.update("INSERT INTO companiondb.ownedabilities (idcharacter, idability) VALUES ('" +
-                    dto.getIdcharacter() + "', '" + startingAbilityID + "');");
-            db.update("COMMIT;");
+            db.update("INSERT INTO companiondb.ownedabilities (idcharacter, idability) VALUES (?, ?)",new String[]{dto.getIdcharacter()+"",startingAbilityID+""});
+            db.update("COMMIT;", new String[]{});
             db.close();
 
             CharacterDTO character = getCharacterByID(dto.getIdcharacter());
@@ -113,7 +105,7 @@ public class CharacterDAO {
     public int getNextID() throws WebApplicationException{ //Returns true if email already exists in system
         try {
             db.connect();
-            ResultSet rs = db.query("SELECT MAX(idCharacter) AS max FROM companiondb.character;");
+            ResultSet rs = db.query("SELECT MAX(idCharacter) AS max FROM companiondb.character;",new String[]{});
             rs.next();
             int max = rs.getInt("max");
             rs.close();

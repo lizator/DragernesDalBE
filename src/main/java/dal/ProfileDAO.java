@@ -15,7 +15,7 @@ public class ProfileDAO {
     public ProfileDTO getProfileByEmail(String email) throws WebApplicationException{
         try {
             db.connect();
-            ResultSet rs = db.query("SELECT * FROM user WHERE email = '" + email + "';");
+            ResultSet rs = db.query("SELECT * FROM user WHERE email = ?", new String[] { email });
             rs.next();
             ProfileDTO user = new ProfileDTO();
             setUser(rs, user);
@@ -34,7 +34,7 @@ public class ProfileDAO {
     public boolean getEmailExists(String email) throws WebApplicationException{ //Returns true if email already exists in system
         try {
             db.connect();
-            ResultSet rs = db.query("SELECT COUNT(*) AS 'count' FROM user WHERE email = '" + email + "';");
+            ResultSet rs = db.query("SELECT COUNT(*) AS 'count' FROM user WHERE email = ?", new String[] { email });
             rs.next();
             int count = rs.getInt("count");
             rs.close();
@@ -48,10 +48,11 @@ public class ProfileDAO {
         }
     }
 
+    // @TODO don't do this!!! Use auto increment in database instead.
     public int getNextID() throws WebApplicationException{ //Returns true if email already exists in system
         try {
             db.connect();
-            ResultSet rs = db.query("SELECT MAX(idUser) AS max FROM user;");
+            ResultSet rs = db.query("SELECT MAX(idUser) AS max FROM user", new String[] {});
             rs.next();
             int max = rs.getInt("max");
             rs.close();
@@ -70,14 +71,7 @@ public class ProfileDAO {
         try {
             dto.setId(getNextID()); //Get ID assigned
             db.connect();
-            db.update("INSERT INTO user (idUser, firstName, secondName, email, phone, passHash, salt) VALUES ('"
-                    + dto.getId() + "', '"
-                    + dto.getFirstName() + "', '"
-                    + dto.getLastName() + "', '"
-                    + dto.getEmail() + "', '"
-                    + dto.getPhone() + "', '"
-                    + dto.getPassHash() + "', '"
-                    + dto.getSalt() + "');");
+            db.update("INSERT INTO user (idUser, firstName, secondName, email, phone, passHash, salt) VALUES (?,?,?,?,?,?,?)",new String[]{dto.getId()+"",dto.getFirstName(),dto.getLastName(),dto.getEmail(),dto.getPhone()+"",dto.getPassHash(),dto.getSalt()});
 
             ProfileDTO user = getProfileByEmail(dto.getEmail());
             db.close();
@@ -90,6 +84,7 @@ public class ProfileDAO {
         }
 
     }
+
 
 
     public boolean getConnected() throws SQLException {
