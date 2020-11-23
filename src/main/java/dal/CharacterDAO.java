@@ -105,8 +105,7 @@ public class CharacterDAO {
     public int getNextID() throws WebApplicationException{ //Returns true if email already exists in system
         try {
             db.connect();
-            ResultSet rs = db.query("SELECT MAX(idCharacter) AS max FROM companiondb.character;");
-            //ResultSet rs = db.query("SELECT * FROM user WHERE email = ?", new String[] { email });
+            ResultSet rs = db.query("SELECT MAX(idCharacter) AS max FROM companiondb.character;",new String[]{});
             rs.next();
             int max = rs.getInt("max");
             rs.close();
