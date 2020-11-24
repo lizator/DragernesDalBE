@@ -71,7 +71,8 @@ public class ProfileDAO {
         try {
             dto.setId(getNextID()); //Get ID assigned
             db.connect();
-            db.update("INSERT INTO user (idUser, firstName, secondName, email, phone, passHash, salt) VALUES (?,?,?,?,?,?,?)",new String[]{dto.getId()+"",dto.getFirstName(),dto.getLastName(),dto.getEmail(),dto.getPhone()+"",dto.getPassHash(),dto.getSalt()});
+            db.update("INSERT INTO user (idUser, firstName, secondName, email, phone, passHash, salt) VALUES (?,?,?,?,?,?,?)",
+                    new String[]{dto.getId()+"",dto.getFirstName(),dto.getLastName(),dto.getEmail(),dto.getPhone()+"",dto.getPassHash(),dto.getSalt()});
 
             ProfileDTO user = getProfileByEmail(dto.getEmail());
             db.close();
