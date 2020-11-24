@@ -6,8 +6,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import tools.PasswordHandler;
-
-import javax.ws.rs.WebApplicationException;
 import java.util.ArrayList;
 
 @RestController
@@ -16,7 +14,7 @@ public class ProfileController { //TODO implement sessions
     PasswordHandler passHandler = new PasswordHandler();
 
     @PostMapping(value = "/user/getbyemail", consumes = "application/json", produces = "application/json")
-    public ProfileDTO getProfileByEmail(@RequestBody ProfileDTO dto) throws WebApplicationException {
+    public ProfileDTO getProfileByEmail(@RequestBody ProfileDTO dto) throws ResponseStatusException {
         if (dao.getEmailExists(dto.getEmail())) {
             return dao.getProfileByEmail(dto.getEmail());
         }
@@ -24,7 +22,7 @@ public class ProfileController { //TODO implement sessions
     }
 
     @PostMapping(value = "/user/login", consumes = "application/json", produces = "application/json")
-    public ProfileDTO login(@RequestBody ProfileDTO dto) throws WebApplicationException {
+    public ProfileDTO login(@RequestBody ProfileDTO dto) throws ResponseStatusException {
         if (dao.getEmailExists(dto.getEmail())) {
             ProfileDTO foundDto = dao.getProfileByEmail(dto.getEmail());
             if (passHandler.checkPass(dto.getPassHash(), foundDto.getPassHash(), foundDto.getSalt()))
@@ -35,7 +33,7 @@ public class ProfileController { //TODO implement sessions
     }
 
     @PostMapping(value = "/user/autologin", consumes = "application/json", produces = "application/json")
-    public ProfileDTO autoLogin(@RequestBody ProfileDTO dto) throws WebApplicationException {
+    public ProfileDTO autoLogin(@RequestBody ProfileDTO dto) throws ResponseStatusException {
         if (dao.getEmailExists(dto.getEmail())) {
             ProfileDTO foundDto = dao.getProfileByEmail(dto.getEmail());
             if (foundDto.getPassHash().equals(dto.getPassHash()))

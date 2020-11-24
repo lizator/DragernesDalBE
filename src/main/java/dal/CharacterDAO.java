@@ -2,8 +2,9 @@ package dal;
 
 import dal.dto.CharacterDTO;
 import dal.dto.ProfileDTO;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
-import javax.ws.rs.WebApplicationException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -30,7 +31,7 @@ public class CharacterDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new WebApplicationException("Error in DB with character");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB with character");
             //throw new SQLException("Error in Database");
         }
     }
@@ -50,7 +51,7 @@ public class CharacterDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new WebApplicationException("Error in DB with character");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB with character");
             //throw new SQLException("Error in Database");
         }
     }
@@ -80,7 +81,7 @@ public class CharacterDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new WebApplicationException("Error in DB: Creating character");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB: creating character");
             //throw new SQLException("Error in Database");
         }
     }
@@ -102,7 +103,7 @@ public class CharacterDAO {
         character.setBackground(rs.getString("background"));
     }
 
-    public int getNextID() throws WebApplicationException{ //Returns true if email already exists in system
+    public int getNextID(){ //Returns true if email already exists in system
         try {
             db.connect();
             ResultSet rs = db.query("SELECT MAX(idCharacter) AS max FROM companiondb.character;",new String[]{});
@@ -114,7 +115,7 @@ public class CharacterDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new WebApplicationException("Error in DB");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB with characterID");
         }
 
     }

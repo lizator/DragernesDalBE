@@ -1,6 +1,8 @@
 package dal;
 
-import javax.ws.rs.WebApplicationException;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
+
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import java.sql.*;
@@ -101,16 +103,6 @@ public class SQLDatabaseIO {
             conn.close();
             connected=false;
         }
-    }
-
-    /**
-     * Kaster en Exception videre hvis der sker en fejl i systemet
-     * @param status Web status
-     * @param msg Besked der skal stå i fejl meddelelse
-     * @return returner en Webapplication Exception
-     */
-    public WebApplicationException buildError(Status status, String msg){
-        return new WebApplicationException(Response.status(status).entity(msg).build());
     }
 
 }

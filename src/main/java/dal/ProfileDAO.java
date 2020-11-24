@@ -3,8 +3,6 @@ package dal;
 import dal.dto.ProfileDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
-
-import javax.ws.rs.WebApplicationException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -33,7 +31,7 @@ public class ProfileDAO {
 
     }
 
-    public boolean getEmailExists(String email) throws WebApplicationException{ //Returns true if email already exists in system
+    public boolean getEmailExists(String email){ //Returns true if email already exists in system
         try {
             db.connect();
             ResultSet rs = db.query("SELECT COUNT(*) AS 'count' FROM user WHERE email = ?", new String[] { email });
@@ -45,13 +43,13 @@ public class ProfileDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new WebApplicationException("Error in DB");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB with Email Exists");
             //throw new SQLException("Error in Database");
         }
     }
 
     // @TODO don't do this!!! Use auto increment in database instead.
-    public int getNextID() throws WebApplicationException{ //Returns true if email already exists in system
+    public int getNextID() { //Returns true if email already exists in system
         try {
             db.connect();
             ResultSet rs = db.query("SELECT MAX(idUser) AS max FROM user", new String[] {});
@@ -63,13 +61,13 @@ public class ProfileDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new WebApplicationException("Error in DB");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB with userID");
             //throw new SQLException("Error in Database");
         }
 
     }
 
-    public ProfileDTO createUser(ProfileDTO dto) throws WebApplicationException{
+    public ProfileDTO createUser(ProfileDTO dto){
         try {
             dto.setId(getNextID()); //Get ID assigned
             db.connect();
@@ -82,7 +80,7 @@ public class ProfileDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new WebApplicationException("Error in DB");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB with creating user");
             //throw new SQLException("Error in Database");
         }
 
@@ -95,7 +93,7 @@ public class ProfileDAO {
         return true;
     }
 
-    private void setUser(ResultSet rs, ProfileDTO user) throws SQLException {
+    private void setUser(ResultSet rs, ProfileDTO user) throws SQLException { //TODO implement background
         user.setId(rs.getInt("idUser"));
         user.setFirstName(rs.getString("firstName"));
         user.setLastName(rs.getString("secondName"));

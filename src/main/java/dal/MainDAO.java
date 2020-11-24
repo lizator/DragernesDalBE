@@ -1,9 +1,9 @@
 package dal;
 
 import dal.dto.MainDTO;
-import dal.dto.ProfileDTO;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
-import javax.ws.rs.WebApplicationException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -23,7 +23,7 @@ public class MainDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new WebApplicationException("Error in DB");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB with main/table");
             //throw new SQLException("Error in Database");
         }
     }
