@@ -1,6 +1,8 @@
 package dal;
 
 import dal.dto.ProfileDTO;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.ws.rs.WebApplicationException;
 import java.sql.ResultSet;
@@ -12,7 +14,7 @@ public class ProfileDAO {
     public ProfileDAO() {
     }
 
-    public ProfileDTO getProfileByEmail(String email) throws WebApplicationException{
+    public ProfileDTO getProfileByEmail(String email){
         try {
             db.connect();
             ResultSet rs = db.query("SELECT * FROM user WHERE email = ?", new String[] { email });
@@ -25,7 +27,7 @@ public class ProfileDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new WebApplicationException("Error in DB");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Error in DB");
             //throw new SQLException("Error in Database");
         }
 
