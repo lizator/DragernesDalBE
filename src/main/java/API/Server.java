@@ -1,5 +1,7 @@
 package API;
 
+import dal.MainDAO;
+import dal.dto.MainDTO;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.util.StringUtils;
@@ -14,6 +16,15 @@ public class Server {
     }
 }
 
+@RestController
+class MainController{
+    MainDAO dao = new MainDAO();
+    @RequestMapping(value = "/main/tableupdate/{tableName}", produces = "application/json")
+    public MainDTO tableUpdate(@PathVariable String tableName){
+        return dao.getLastTimeTableModified(tableName);
+    }
+
+}
 
 //Eksempel på brug af Rest API i Spring
 @RestController

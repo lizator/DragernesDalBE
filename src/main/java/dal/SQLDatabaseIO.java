@@ -1,6 +1,8 @@
 package dal;
 
-import javax.ws.rs.WebApplicationException;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
+
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import java.sql.*;
@@ -36,18 +38,6 @@ public class SQLDatabaseIO {
     }
 
     /**
-     * /Tells object what DB to use
-     * @param db Definerer en specifik database
-     * @throws SQLException
-     */
-    public void setDB(String db) throws SQLException {
-        this.db_name = db;
-        connect();
-        query("use "+db);
-        close();
-    }
-
-    /**
      * Try to connect to DB
      * @throws SQLException
      */
@@ -69,13 +59,18 @@ public class SQLDatabaseIO {
      * @param query Database navn
      * @throws SQLException
      */
-    public void update(String query) throws SQLException {
+    public void update(String query, String[] strings) throws SQLException {
         if(connected){
             stmt = conn.createStatement();
             stmt.executeUpdate("use "+db_name);
-            stmt.executeUpdate(query);
+            PreparedStatement stmt = conn.prepareStatement(query); // SELECT * FROM user WHERE email = ?
+            for (int i = 0; i < strings.length; i++) {
+                stmt.setString(i + 1, strings[i]);
+            }
+            stmt.executeUpdate();
         }
     }
+
 
     /**
      * Runs query on mysql server, and returns ResultSet object.
@@ -83,17 +78,21 @@ public class SQLDatabaseIO {
      * @return Runs query on mysql server, and returns ResultSet object.
      * @throws SQLException
      */
-    public ResultSet query(String query) throws SQLException {
+    public ResultSet query(String query, String[] strings) throws SQLException {
         ResultSet result = null;
         if(!connected){
             System.out.println("Connect to a DB first");
         } else{
-            stmt = conn.createStatement();
-            stmt.executeUpdate("use "+db_name);
-            result = stmt.executeQuery(query);
+            PreparedStatement stmt = conn.prepareStatement(query); // SELECT * FROM user WHERE email = ?
+            for (int i = 0; i < strings.length; i++) {
+                stmt.setString(i + 1, strings[i]);
+            }
+
+            result = stmt.executeQuery();
         }
         return result;
     }
+
 
     /**
      * Close connection to mysql server
@@ -104,16 +103,6 @@ public class SQLDatabaseIO {
             conn.close();
             connected=false;
         }
-    }
-
-    /**
-     * Kaster en Exception videre hvis der sker en fejl i systemet
-     * @param status Web status
-     * @param msg Besked der skal stå i fejl meddelelse
-     * @return returner en Webapplication Exception
-     */
-    public WebApplicationException buildError(Status status, String msg){
-        return new WebApplicationException(Response.status(status).entity(msg).build());
     }
 
 }
