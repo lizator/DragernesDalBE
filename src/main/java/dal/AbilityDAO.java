@@ -1,9 +1,8 @@
 package dal;
 
 import dal.dto.AbilityDTO;
-import dal.dto.CharacterDTO;
-
-import javax.ws.rs.WebApplicationException;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -15,7 +14,7 @@ public class AbilityDAO {
     public List<AbilityDTO> getAbilitiesByCharacterID(int characterid) {
         try {
             db.connect();
-            ResultSet rs = db.query("SELECT * FROM companiondb.owningAbilitiesView WHERE idcharacter = " + characterid + ";");
+            ResultSet rs = db.query("SELECT * FROM companiondb.owningAbilitiesView WHERE idcharacter = ?", new String[] {characterid+""});
             List<AbilityDTO> abilityList = new ArrayList<>();
             while (rs.next()) {
                 AbilityDTO ability = new AbilityDTO();
@@ -28,7 +27,7 @@ public class AbilityDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new WebApplicationException("Error in DB with character");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB with character");
             //throw new SQLException("Error in Database");
         }
     }

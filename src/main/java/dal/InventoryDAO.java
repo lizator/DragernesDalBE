@@ -1,9 +1,9 @@
 package dal;
 
-import dal.dto.AbilityDTO;
 import dal.dto.InventoryDTO;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
-import javax.ws.rs.WebApplicationException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ public class InventoryDAO {
     public List<InventoryDTO> getInventoryByCharacterID(int characterid) {
         try {
             db.connect();
-            ResultSet rs = db.query("SELECT * FROM companiondb.inventory WHERE idcharacter = " + characterid + ";");
+            ResultSet rs = db.query("SELECT * FROM companiondb.inventory WHERE idcharacter = ?", new String[]{characterid+""});
             List<InventoryDTO> itemList = new ArrayList<>();
             while (rs.next()) {
                 InventoryDTO item = new InventoryDTO();
@@ -28,7 +28,7 @@ public class InventoryDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new WebApplicationException("Error in DB with character");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB with character");
             //throw new SQLException("Error in Database");
         }
     }

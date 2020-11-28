@@ -1,9 +1,9 @@
 package dal;
 
 import dal.dto.MainDTO;
-import dal.dto.ProfileDTO;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
-import javax.ws.rs.WebApplicationException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -13,7 +13,7 @@ public class MainDAO {
     public MainDTO getLastTimeTableModified(String tableName){
         try {
             db.connect();
-            ResultSet rs = db.query("SHOW TABLE STATUS FROM companiondb LIKE '" + tableName + "';");
+            ResultSet rs = db.query("SHOW TABLE STATUS FROM companiondb LIKE ?",new String[]{tableName});
             rs.next();
             String update = rs.getString("Update_time");
             if (update == null) update = rs.getString("Create_time");
@@ -23,7 +23,7 @@ public class MainDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new WebApplicationException("Error in DB");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB with main/table");
             //throw new SQLException("Error in Database");
         }
     }
