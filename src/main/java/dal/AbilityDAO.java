@@ -56,14 +56,7 @@ public class AbilityDAO {
             db.connect();
             db.update("INSERT INTO companiondb.owningAbilitiesView (idcharacter, idability) VALUES (?,?)",
                     new String[]{characterID+"",abilityID+""});
-
-            ResultSet rs = db.query("SELECT * FROM companiondb.abilities WHERE idability = ?", new String[] {abilityID+""});
-            rs.next();
-            AbilityDTO ability = new AbilityDTO();
-            setAbility(rs, ability);
-            rs.close();
-            db.close();
-            return ability;
+            return getAbilityByID(abilityID);
 
         } catch (SQLException e) {
             e.printStackTrace();
