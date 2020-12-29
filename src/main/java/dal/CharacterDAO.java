@@ -61,13 +61,13 @@ public class CharacterDAO {
             db.connect();
             db.update("UPDATE companiondb.character SET " +
                     "iduser = ?, " +
-                    "namecharacter = '?'\n" +
-                    "idrace = ?\n" +
-                    "age = ?\n" +
-                    "currentep = ?\n" +
-                    "strength = ?\n" +
-                    "health = ?\n" +
-                    "background = '?'\n" +
+                    "namecharacter = ?, " +
+                    "idrace = ?, " +
+                    "age = ?, " +
+                    "currentep = ?, " +
+                    "strength = ?, " +
+                    "health = ?, " +
+                    "background = ? " +
                     "WHERE idcharacter = ?;", new String[]{
                             dto.getIduser()+"",
                             dto.getName(),
