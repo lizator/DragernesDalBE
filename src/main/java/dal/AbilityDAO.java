@@ -1,6 +1,7 @@
 package dal;
 
 import dal.dto.AbilityDTO;
+import dal.dto.ProfileDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 import java.sql.ResultSet;
@@ -24,6 +25,45 @@ public class AbilityDAO {
             rs.close();
             db.close();
             return abilityList;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB with character");
+            //throw new SQLException("Error in Database");
+        }
+    }
+
+    public AbilityDTO getAbilityByID(int abilityID){
+        try {
+            db.connect();
+            ResultSet rs = db.query("SELECT * FROM companiondb.abilities WHERE idability = ?", new String[] {abilityID+""});
+            rs.next();
+            AbilityDTO ability = new AbilityDTO();
+            setAbility(rs, ability);
+            rs.close();
+            db.close();
+            return ability;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB with character");
+            //throw new SQLException("Error in Database");
+        }
+    }
+
+    public AbilityDTO buyAbility(int characterID, int abilityID){
+        try {
+            db.connect();
+            db.update("INSERT INTO companiondb.owningAbilitiesView (idcharacter, idability) VALUES (?,?)",
+                    new String[]{characterID+"",abilityID+""});
+
+            ResultSet rs = db.query("SELECT * FROM companiondb.abilities WHERE idability = ?", new String[] {abilityID+""});
+            rs.next();
+            AbilityDTO ability = new AbilityDTO();
+            setAbility(rs, ability);
+            rs.close();
+            db.close();
+            return ability;
 
         } catch (SQLException e) {
             e.printStackTrace();

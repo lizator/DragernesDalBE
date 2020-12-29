@@ -55,6 +55,37 @@ public class CharacterDAO {
             //throw new SQLException("Error in Database");
         }
     }
+ //TODO remove
+    public CharacterDTO updateCharacter(CharacterDTO dto){
+        try {
+            db.connect();
+            db.update("UPDATE companiondb.character SET " +
+                    "iduser = ?, " +
+                    "namecharacter = '?'\n" +
+                    "idrace = ?\n" +
+                    "age = ?\n" +
+                    "currentep = ?\n" +
+                    "strength = ?\n" +
+                    "health = ?\n" +
+                    "background = '?'\n" +
+                    "WHERE idcharacter = ?;", new String[]{
+                            dto.getIduser()+"",
+                            dto.getName(),
+                            dto.getIdrace()+"",
+                            dto.getAge()+"",
+                            dto.getCurrentep()+"",
+                            dto.getStrength()+"",
+                            dto.getHealth()+"",
+                            dto.getBackground()+"",
+                            dto.getIdcharacter()+""});
+            return dto;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB with character");
+            //throw new SQLException("Error in Database");
+        }
+    }
 
     public CharacterDTO createCharacter(CharacterDTO dto){
         try {
