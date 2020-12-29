@@ -24,4 +24,9 @@ public class CharacterController {
     public CharacterDTO createCharacter(@RequestBody CharacterDTO dto){
         return dao.createCharacter(dto);
     }
+
+    @PostMapping(value = "/character/update", consumes = "application/json", produces = "application/json")
+    public CharacterDTO updateCharacter(@RequestBody CharacterDTO dto){
+        return dao.updateCharacter(dto);
+    }
 }
