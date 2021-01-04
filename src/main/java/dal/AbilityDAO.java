@@ -33,6 +33,32 @@ public class AbilityDAO {
         }
     }
 
+    public List<AbilityDTO> getAbilitiesByRaceID(int raceID) {
+        try {
+            db.connect();
+            ResultSet rs = db.query("SELECT * FROM companiondb.races WHERE idrace = ?", new String[] {raceID+""});
+            List<AbilityDTO> abilityList = new ArrayList<>();
+            rs.next();
+            for (int i = 0; i < 4; i++){
+                int abilityID = rs.getInt(i+3);
+                ResultSet rs2 = db.query("SELECT * FROM companiondb.abilities WHERE idability = ?", new String[] {abilityID+""});
+                rs2.next();
+                AbilityDTO ability = new AbilityDTO();
+                setAbility(rs2, ability);
+                rs2.close();
+                abilityList.add(ability);
+            }
+            rs.close();
+            db.close();
+            return abilityList;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB with character");
+            //throw new SQLException("Error in Database");
+        }
+    }
+
     public AbilityDTO getAbilityByID(int abilityID){
         try {
             db.connect();
