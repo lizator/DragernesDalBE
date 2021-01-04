@@ -100,10 +100,11 @@ public class CharacterDAO {
                     "(1, ?, 'Guld', 0), " +
                     "(2, ?, 'Sølv', 0), " +
                     "(3, ?, 'Kobber', 0)",new String[]{dto.getIdcharacter()+"",dto.getIdcharacter()+"",dto.getIdcharacter()+""});
-            ResultSet rs = db.query("SELECT * FROM companiondb.races WHERE idrace = ?", new String[] {dto.getIdrace()+""});
+            //out-comment getting ability
+            /*ResultSet rs = db.query("SELECT * FROM companiondb.races WHERE idrace = ?", new String[] {dto.getIdrace()+""});
             rs.next();
             int startingAbilityID = rs.getInt("start");
-            db.update("INSERT INTO companiondb.ownedabilities (idcharacter, idability) VALUES (?, ?)",new String[]{dto.getIdcharacter()+"",startingAbilityID+""});
+            db.update("INSERT INTO companiondb.ownedabilities (idcharacter, idability) VALUES (?, ?)",new String[]{dto.getIdcharacter()+"",startingAbilityID+""});*/
             db.update("COMMIT;", new String[]{});
             db.close();
 
