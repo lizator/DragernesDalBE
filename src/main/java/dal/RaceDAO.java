@@ -35,6 +35,24 @@ public class RaceDAO {
         }
     }
 
+    public RaceDTO getRace(int raceID){
+        try {
+            db.connect();
+            ResultSet rs = db.query("SELECT * FROM companiondb.races WHERE idrace = ?", new String[] {raceID + ""});
+            RaceDTO race = new RaceDTO();
+            rs.next();
+            setRace(rs, race);
+            rs.close();
+            db.close();
+            return race;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB with Races");
+            //throw new SQLException("Error in Database");
+        }
+    }
+
     private void setRace(ResultSet rs, RaceDTO race) throws SQLException { //TODO implement background
         race.setID(rs.getInt("idrace"));
         race.setRacename(rs.getString("racename"));

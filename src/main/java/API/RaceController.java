@@ -13,9 +13,14 @@ import java.util.List;
 public class RaceController {
     RaceDAO dao = new RaceDAO();
 
-    @GetMapping(value = "/race/info/standart", produces = "application/json") //Works
+    @GetMapping(value = "/race/info/standart", produces = "application/json")
     public List<RaceDTO> getRacesStandart(){
         return dao.getRacesStandart();
+    }
+
+    @GetMapping(value = "/race/info/single/{raceID}", produces = "application/json")
+    public RaceDTO getRaceinfo(@PathVariable int raceID){
+        return dao.getRace(raceID);
     }
 
 }
