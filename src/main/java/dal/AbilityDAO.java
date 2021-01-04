@@ -98,5 +98,6 @@ public class AbilityDAO {
         ability.setType(rs.getString("type"));
         ability.setPagenumber(rs.getInt("pagenumber"));
         ability.setDesc(rs.getString("shortdesc"));
+        ability.setCommand(rs.getString("command")); //TODO: add parent ID
     }
 }
