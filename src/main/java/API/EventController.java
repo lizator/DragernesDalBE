@@ -14,8 +14,8 @@ import java.util.List;
 public class EventController {
     EventDAO dao = new EventDAO();
 
-    @GetMapping(value = "/event/events/", produces = "application/json") //Works
-    public List<EventDTO> getCharacterByID(){
+    @GetMapping(value = "/event/events", produces = "application/json") //Works
+    public List<EventDTO> getAllEvents(){
         return dao.getAllEvents();
     }
 }
