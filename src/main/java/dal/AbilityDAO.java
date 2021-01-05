@@ -36,7 +36,7 @@ public class AbilityDAO {
     public List<AbilityDTO> getAbilitiesByRaceID(int raceID) {
         try {
             db.connect();
-            ResultSet rs = db.query("SELECT * FROM companiondb.races WHERE idrace = ?", new String[] {raceID+""});
+            ResultSet rs = db.query("SELECT * FROM companiondb.races WHERE idrace = ? ORDER BY idability", new String[] {raceID+""});
             List<AbilityDTO> abilityList = new ArrayList<>();
             rs.next();
             for (int i = 0; i < 4; i++){
@@ -62,7 +62,7 @@ public class AbilityDAO {
     public List<AbilityDTO> getAbilitiesByType(String type) {
         try {
             db.connect();
-            ResultSet rs = db.query("SELECT * FROM companiondb.abilities WHERE type = ?", new String[] {type});
+            ResultSet rs = db.query("SELECT * FROM companiondb.abilities WHERE type = ? ORDER BY nameability", new String[] {type});
             List<AbilityDTO> abilityList = new ArrayList<>();
             while (rs.next()) {
                 AbilityDTO ability = new AbilityDTO();
@@ -83,7 +83,7 @@ public class AbilityDAO {
     public AbilityDTO getAbilityByID(int abilityID){
         try {
             db.connect();
-            ResultSet rs = db.query("SELECT * FROM companiondb.abilities WHERE idability = ?", new String[] {abilityID+""});
+            ResultSet rs = db.query("SELECT * FROM companiondb.abilities WHERE idability = ? ", new String[] {abilityID+""});
             rs.next();
             AbilityDTO ability = new AbilityDTO();
             setAbility(rs, ability);
