@@ -59,6 +59,27 @@ public class AbilityDAO {
         }
     }
 
+    public List<AbilityDTO> getAbilitiesByType(String type) {
+        try {
+            db.connect();
+            ResultSet rs = db.query("SELECT * FROM companiondb.abilities WHERE type = ?", new String[] {type});
+            List<AbilityDTO> abilityList = new ArrayList<>();
+            while (rs.next()) {
+                AbilityDTO ability = new AbilityDTO();
+                setAbility(rs, ability);
+                abilityList.add(ability);
+            }
+            rs.close();
+            db.close();
+            return abilityList;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB with character");
+            //throw new SQLException("Error in Database");
+        }
+    }
+
     public AbilityDTO getAbilityByID(int abilityID){
         try {
             db.connect();
@@ -98,6 +119,7 @@ public class AbilityDAO {
         ability.setType(rs.getString("type"));
         ability.setPagenumber(rs.getInt("pagenumber"));
         ability.setDesc(rs.getString("shortdesc"));
-        ability.setCommand(rs.getString("command")); //TODO: add parent ID
+        ability.setCommand(rs.getString("command"));
+        ability.setIdparent(rs.getInt("idparentability"));
     }
 }

@@ -27,6 +27,11 @@ public class AbilityController {
         return dao.getAbilitiesByRaceID(raceID);
     }
 
+    @GetMapping(value = "/ability/byType/{type}", produces = "application/json")
+    public List<AbilityDTO> getAbilitiesByRaceID(@PathVariable String type){
+        return dao.getAbilitiesByType(type);
+    }
+
     @GetMapping(value = "/ability/byID/{abilityID}", produces = "application/json")
     public AbilityDTO getAbilityByID(@PathVariable int abilityID){
         return dao.getAbilityByID(abilityID);
