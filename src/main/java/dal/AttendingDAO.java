@@ -1,6 +1,7 @@
 package dal;
 
 import dal.dto.AttendingDTO;
+import dal.dto.CharacterDTO;
 import dal.dto.EventDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
@@ -37,5 +38,22 @@ public class AttendingDAO {
     private void setAttending(ResultSet rs, AttendingDTO attendingDTO) throws SQLException {
         attendingDTO.setIdChar(rs.getInt("idcharacter"));
         attendingDTO.setIdEvent(rs.getInt("idevent"));
+    }
+
+    public AttendingDTO setAttending(AttendingDTO dto) {
+        try {
+            db.connect();
+            db.update("START TRANSACTION;",new String[]{});
+            db.update("INSERT INTO companiondb.eventAttendancyList (idcharacter, idevent) VALUES (?,?)", new String[] {dto.getIdChar()+"",dto.getIdEvent()+""});
+            db.update("COMMIT", new String[]{});
+            db.close();
+
+            return new AttendingDTO(dto.getIdChar(),dto.getIdEvent());
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB: setting attending");
+        }
+
     }
 }

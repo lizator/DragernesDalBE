@@ -39,7 +39,7 @@ public class EventDAO {
         eventDTO.setAddress(rs.getString("address"));
         eventDTO.setInfo(rs.getString("info"));
         eventDTO.setName(rs.getString("name"));
-        eventDTO.setStartDate(rs.getDate("startDate"));
-        eventDTO.setEndDate(rs.getDate("endDate"));
+        eventDTO.setStartDate(rs.getTimestamp("startDate"));
+        eventDTO.setEndDate(rs.getTimestamp("endDate"));
     }
 }
