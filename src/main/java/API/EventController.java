@@ -3,10 +3,9 @@ package API;
 import dal.AttendingDAO;
 import dal.EventDAO;
 import dal.dto.AttendingDTO;
+import dal.dto.CharacterDTO;
 import dal.dto.EventDTO;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -21,4 +20,8 @@ public class EventController {
     }
     @GetMapping(value = "/event/attending/{charID}", produces = "application/json")
     public List<AttendingDTO> getAllAttending(@PathVariable int charID) {return daoA.getAllAttending(charID);}
+    @PostMapping(value = "/event/attending/set", consumes = "application/json", produces = "application/json")
+    public AttendingDTO setAttending(@RequestBody AttendingDTO dto){
+        return daoA.setAttending(dto);
+    }
 }
