@@ -39,7 +39,7 @@ public class CharacterDAO {
     public CharacterDTO getCharacterByID(int characterID){
         try {
             db.connect();
-            ResultSet rs = db.query("SELECT * FROM companiondb.characterInfoView WHERE idcharacter = ? AND status = 'aktiv'", new String[] {characterID+""});
+            ResultSet rs = db.query("SELECT * FROM companiondb.characterInfoView WHERE idcharacter = ?", new String[] {characterID+""});
             List<CharacterDTO> charList = new ArrayList<>();
             rs.next();
             CharacterDTO character = new CharacterDTO();
