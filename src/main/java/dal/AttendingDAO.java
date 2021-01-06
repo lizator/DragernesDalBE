@@ -56,4 +56,21 @@ public class AttendingDAO {
         }
 
     }
+
+    public AttendingDTO removeAttending(AttendingDTO dto) {
+        try {
+            db.connect();
+            db.update("START TRANSACTION;",new String[]{});
+            db.update("DELETE FROM companiondb.eventAttendancyList WHERE (idcharacter = ?) and (idevent = ?);", new String[] {dto.getIdChar()+"",dto.getIdEvent()+""});
+            db.update("COMMIT", new String[]{});
+            db.close();
+
+            return new AttendingDTO(dto.getIdChar(),dto.getIdEvent());
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB: setting attending");
+        }
+
+    }
 }
