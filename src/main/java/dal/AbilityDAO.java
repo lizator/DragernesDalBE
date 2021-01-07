@@ -107,7 +107,39 @@ public class AbilityDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB with character");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB with ability");
+            //throw new SQLException("Error in Database");
+        }
+    }
+
+    public AbilityDTO addCraft(String craft){
+        try {
+            AbilityDTO dto = new AbilityDTO(getNextID(), craft, 1, "Dette er et Håndværk", "Håndværk", 0, "NULL", 0);
+            db.connect();
+            db.update("INSERT INTO companiondb.abilities (idability, nameability, cost, type, pagenumber, shortdesc, command) VALUES (?,?,?,?,?,?,?)",
+                    new String[]{dto.getId()+"",dto.getName(),
+                    dto.getCost()+"", dto.getType(), dto.getPagenumber()+"",
+                    dto.getDesc(), dto.getCommand()});
+            return getAbilityByID(dto.getId());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB with ability");
+            //throw new SQLException("Error in Database");
+        }
+    }
+
+    public int getNextID(){
+        try {
+            db.connect();
+            ResultSet rs = db.query("SELECT MAX(idability) AS max FROM companiondb.abilities;", new String[]{});
+            rs.next();
+            int max = rs.getInt("max");
+            rs.close();
+            db.close();
+            return max + 1;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB with next idability");
             //throw new SQLException("Error in Database");
         }
     }
