@@ -59,6 +59,27 @@ public class AbilityDAO {
         }
     }
 
+    public List<AbilityDTO> getRacestartersAbilities() {
+        try {
+            db.connect();
+            ResultSet rs = db.query("SELECT * FROM companiondb.abilities WHERE cost = 0 AND type = 'Race' AND idability < 39", new String[] {});
+            List<AbilityDTO> abilityList = new ArrayList<>();
+            while(rs.next()){
+                AbilityDTO ability = new AbilityDTO();
+                setAbility(rs, ability);
+                abilityList.add(ability);
+            }
+            rs.close();
+            db.close();
+            return abilityList;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB with character");
+            //throw new SQLException("Error in Database");
+        }
+    }
+
     public List<AbilityDTO> getAbilitiesByType(String type) {
         try {
             db.connect();
