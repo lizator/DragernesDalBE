@@ -34,16 +34,16 @@ public class EventDTO {
         this.name = name;
     }
 
-    public LocalDateTime getStartDate() {
-        return startDate;
+    public String getStartDate() {
+        return startDate.toString();
     }
 
     public void setStartDate(Timestamp startDate) {
         this.startDate = startDate.toInstant().atZone(ZoneId.of("UTC")).toLocalDateTime();
     }
 
-    public LocalDateTime getEndDate() {
-        return endDate;
+    public String getEndDate() {
+        return endDate.toString();
     }
 
     public void setEndDate(Timestamp endDate) {
