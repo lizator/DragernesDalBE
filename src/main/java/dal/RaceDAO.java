@@ -53,6 +53,34 @@ public class RaceDAO {
         }
     }
 
+    public List<RaceDTO> getCharacterRaces(int characterID){
+        try {
+            db.connect();
+            ResultSet rs0 = db.query("SELECT COUNT(*) AS count FROM companiondb.krysling WHERE idcharacter = ?", new String[] {characterID+""});
+            rs0.next();
+            if (rs0.getInt("count") == 1) {
+                rs0.close();
+                ResultSet rs = db.query("SELECT * FROM companiondb.krysling WHERE idcharacter = ?", new String[]{characterID + ""});
+                List<RaceDTO> raceList = new ArrayList<>();
+                rs.next();
+                int race1ID = rs.getInt("race1");
+                int race2ID = rs.getInt("race2");
+                raceList.add(getRace(race1ID));
+                raceList.add(getRace(race2ID));
+
+                rs.close();
+                db.close();
+                return raceList;
+            }
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "character not in Krysling-table");
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB with krysling");
+            //throw new SQLException("Error in Database");
+        }
+    }
+
     private void setRace(ResultSet rs, RaceDTO race) throws SQLException { //TODO implement background
         race.setID(rs.getInt("idrace"));
         race.setRacename(rs.getString("racename"));

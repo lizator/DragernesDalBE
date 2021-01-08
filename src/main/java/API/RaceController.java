@@ -23,4 +23,9 @@ public class RaceController {
         return dao.getRace(raceID);
     }
 
+    @GetMapping(value = "/race/krys/getCharacterRaces/{characterid}", produces = "application/json")
+    public List<RaceDTO> getCharacterRaces(@PathVariable int characterid){
+        return dao.getCharacterRaces(characterid);
+    }
+
 }
