@@ -28,4 +28,9 @@ public class EventController {
     public AttendingDTO removeAttending(@RequestBody AttendingDTO dto){
         return daoA.removeAttending(dto);
     }
+    @PostMapping(value = "/event/create", consumes = "application/json", produces = "application/json")
+    public EventDTO createEvent(@RequestBody EventDTO dto){
+        return dao.createEvent(dto);
+    }
+
 }

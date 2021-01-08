@@ -1,5 +1,6 @@
 package dal;
 
+import dal.dto.AttendingDTO;
 import dal.dto.EventDTO;
 import dal.dto.InventoryDTO;
 import org.springframework.http.HttpStatus;
@@ -42,4 +43,23 @@ public class EventDAO {
         eventDTO.setStartDate(rs.getTimestamp("startDate"));
         eventDTO.setEndDate(rs.getTimestamp("endDate"));
     }
+
+    public EventDTO createEvent(EventDTO dto) {
+        try {
+            db.connect();
+            db.update("START TRANSACTION;",new String[]{});
+            db.update("INSERT INTO companiondb.events (name, startDate, endDate, address, info) VALUES (?,?,?,?,?)",
+                    new String[] {dto.getName()+"",dto.getStartDate()+"",dto.getEndDate()+"",dto.getAddress()+"",dto.getInfo()+""});
+            db.update("COMMIT", new String[]{});
+            db.close();
+
+            return new EventDTO();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB: creating event");
+        }
+
+    }
+
 }
