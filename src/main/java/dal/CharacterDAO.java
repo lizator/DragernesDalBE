@@ -2,6 +2,7 @@ package dal;
 
 import dal.dto.CharacterDTO;
 import dal.dto.ProfileDTO;
+import dal.dto.RaceDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -28,6 +29,20 @@ public class CharacterDAO {
             rs.close();
             db.close();
             return charList;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB with character");
+            //throw new SQLException("Error in Database");
+        }
+    }
+
+    public CharacterDTO insertKrysling(int characterid, int race1id, int race2id){
+        try {
+            db.connect();
+            db.update("INSERT INTO companiondb.krysling (idcharacter, race1, race2) " +
+                    "VALUES (?, ?, ?)", new String[] {characterid+"", race1id+"", race2id+""});
+            return getCharacterByID(characterid);
 
         } catch (SQLException e) {
             e.printStackTrace();
