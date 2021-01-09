@@ -67,7 +67,15 @@ public class AbilityController {
     @GetMapping(value = "/ability/buyAndGetFree/{characterID}/{abilityID}/{freeAbilityID}", produces = "application/json")
     public List<AbilityDTO> buyAndGetFreeAbility(@PathVariable int characterID, @PathVariable int abilityID, @PathVariable int freeAbilityID){
         ArrayList<AbilityDTO> ls = new ArrayList<>();
-        ls.add(buyAbility(characterID,abilityID));
+        ls.add(buyAbility(characterID, abilityID));
+        ls.add(getFreeAbility(characterID, freeAbilityID));
+        return ls;
+    }
+
+    @GetMapping(value = "/ability/freeAndGetFree/{characterID}/{abilityID}/{freeAbilityID}", produces = "application/json")
+    public List<AbilityDTO> freeAndGetFreeAbility(@PathVariable int characterID, @PathVariable int abilityID, @PathVariable int freeAbilityID){
+        ArrayList<AbilityDTO> ls = new ArrayList<>();
+        ls.add(getFreeAbility(characterID, abilityID));
         ls.add(getFreeAbility(characterID, freeAbilityID));
         return ls;
     }
