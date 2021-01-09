@@ -1,13 +1,14 @@
 package dal.dto;
 
-import java.sql.Date;
-import java.sql.Time;
+
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 public class EventDTO {
     private String name;
-    private Timestamp startDate;
-    private Timestamp endDate;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
     private String address;
     private String info;
     private int eventID;
@@ -16,7 +17,7 @@ public class EventDTO {
 
     }
 
-    public EventDTO(String name, Timestamp startDate, Timestamp endDate, String address, String info, int eventID){
+    public EventDTO(String name, LocalDateTime startDate, LocalDateTime endDate, String address, String info, int eventID){
         this.name = name;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -33,20 +34,20 @@ public class EventDTO {
         this.name = name;
     }
 
-    public Timestamp getStartDate() {
-        return startDate;
+    public String getStartDate() {
+        return startDate.toString();
     }
 
     public void setStartDate(Timestamp startDate) {
-        this.startDate = startDate;
+        this.startDate = startDate.toInstant().atZone(ZoneId.of("UTC")).toLocalDateTime();
     }
 
-    public Timestamp getEndDate() {
-        return endDate;
+    public String getEndDate() {
+        return endDate.toString();
     }
 
     public void setEndDate(Timestamp endDate) {
-        this.endDate = endDate;
+        this.endDate = endDate.toInstant().atZone(ZoneId.of("UTC")).toLocalDateTime();
     }
 
     public String getAddress() {

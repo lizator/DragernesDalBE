@@ -8,6 +8,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Clock;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,6 +55,33 @@ public class EventDAO {
             db.close();
 
             return new EventDTO();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB: creating event");
+        }
+
+    }
+
+    public EventDTO editEvent(EventDTO dto) {
+        try {
+            db.connect();
+            db.update("UPDATE companiondb.events SET " +
+                    "name = ?, " +
+                    "startDate = ?, " +
+                    "endDate = ?, " +
+                    "address = ?, " +
+                    "info = ? " +
+                    "WHERE idevents = ?;", new String[]{
+                    dto.getName()+"",
+                    dto.getStartDate()+"",
+                    dto.getEndDate()+"",
+                    dto.getAddress()+"",
+                    dto.getInfo()+"",
+                    dto.getEventID()+""});
+            db.close();
+            System.out.println(dto.getStartDate());
+            return dto;
 
         } catch (SQLException e) {
             e.printStackTrace();

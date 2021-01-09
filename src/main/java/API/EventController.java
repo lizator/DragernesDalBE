@@ -1,5 +1,6 @@
 package API;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import dal.AttendingDAO;
 import dal.EventDAO;
 import dal.dto.AttendingDTO;
@@ -31,6 +32,11 @@ public class EventController {
     @PostMapping(value = "/event/create", consumes = "application/json", produces = "application/json")
     public EventDTO createEvent(@RequestBody EventDTO dto){
         return dao.createEvent(dto);
+    }
+
+    @PostMapping(value = "/event/edit", consumes = "application/json", produces = "application/json")
+    public EventDTO editEvent(@RequestBody EventDTO dto){
+        return dao.editEvent(dto);
     }
 
 }
