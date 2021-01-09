@@ -59,7 +59,6 @@ public class RaceDAO {
             ResultSet rs0 = db.query("SELECT COUNT(*) AS count FROM companiondb.krysling WHERE idcharacter = ?", new String[] {characterID+""});
             rs0.next();
             if (rs0.getInt("count") == 1) {
-                rs0.close();
                 ResultSet rs = db.query("SELECT * FROM companiondb.krysling WHERE idcharacter = ?", new String[]{characterID + ""});
                 List<RaceDTO> raceList = new ArrayList<>();
                 rs.next();
@@ -67,7 +66,7 @@ public class RaceDAO {
                 int race2ID = rs.getInt("race2");
                 raceList.add(getRace(race1ID));
                 raceList.add(getRace(race2ID));
-
+                rs0.close();
                 rs.close();
                 db.close();
                 return raceList;
