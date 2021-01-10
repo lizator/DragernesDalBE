@@ -1,8 +1,6 @@
 package dal;
 
 import dal.dto.CharacterDTO;
-import dal.dto.ProfileDTO;
-import dal.dto.RaceDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 

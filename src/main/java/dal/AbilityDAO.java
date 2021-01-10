@@ -93,7 +93,6 @@ public class AbilityDAO {
             rs.close();
             db.close();
             return abilityList;
-
         } catch (SQLException e) {
             e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB with character");
