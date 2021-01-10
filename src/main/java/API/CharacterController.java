@@ -24,4 +24,15 @@ public class CharacterController {
     public CharacterDTO createCharacter(@RequestBody CharacterDTO dto){
         return dao.createCharacter(dto);
     }
+
+    @GetMapping(value = "/character/krys/{characterid}/{race1id}/{race2id}", produces = "application/json")
+    public CharacterDTO insertKrysling(@PathVariable int characterid, @PathVariable int race1id, @PathVariable int race2id){
+        return dao.insertKrysling(characterid, race1id, race2id);
+    }
+
+
+    @PostMapping(value = "/character/update", consumes = "application/json", produces = "application/json")
+    public CharacterDTO updateCharacter(@RequestBody CharacterDTO dto){
+        return dao.updateCharacter(dto);
+    }
 }

@@ -2,6 +2,7 @@ package dal;
 
 import dal.dto.CharacterDTO;
 import dal.dto.ProfileDTO;
+import dal.dto.RaceDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -36,10 +37,24 @@ public class CharacterDAO {
         }
     }
 
+    public CharacterDTO insertKrysling(int characterid, int race1id, int race2id){
+        try {
+            db.connect();
+            db.update("INSERT INTO companiondb.krysling (idcharacter, race1, race2) " +
+                    "VALUES (?, ?, ?)", new String[] {characterid+"", race1id+"", race2id+""});
+            return getCharacterByID(characterid);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB with character");
+            //throw new SQLException("Error in Database");
+        }
+    }
+
     public CharacterDTO getCharacterByID(int characterID){
         try {
             db.connect();
-            ResultSet rs = db.query("SELECT * FROM companiondb.characterInfoView WHERE idcharacter = ? AND status = 'aktiv'", new String[] {characterID+""});
+            ResultSet rs = db.query("SELECT * FROM companiondb.characterInfoView WHERE idcharacter = ?", new String[] {characterID+""});
             List<CharacterDTO> charList = new ArrayList<>();
             rs.next();
             CharacterDTO character = new CharacterDTO();
@@ -48,6 +63,37 @@ public class CharacterDAO {
             rs.close();
             db.close();
             return character;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB with character");
+            //throw new SQLException("Error in Database");
+        }
+    }
+ //TODO remove
+    public CharacterDTO updateCharacter(CharacterDTO dto){
+        try {
+            db.connect();
+            db.update("UPDATE companiondb.character SET " +
+                    "iduser = ?, " +
+                    "namecharacter = ?, " +
+                    "idrace = ?, " +
+                    "age = ?, " +
+                    "currentep = ?, " +
+                    "strength = ?, " +
+                    "health = ?, " +
+                    "background = ? " +
+                    "WHERE idcharacter = ?;", new String[]{
+                            dto.getIduser()+"",
+                            dto.getName(),
+                            dto.getIdrace()+"",
+                            dto.getAge()+"",
+                            dto.getCurrentep()+"",
+                            dto.getStrength()+"",
+                            dto.getHealth()+"",
+                            dto.getBackground()+"",
+                            dto.getIdcharacter()+""});
+            return dto;
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -69,10 +115,11 @@ public class CharacterDAO {
                     "(1, ?, 'Guld', 0), " +
                     "(2, ?, 'Sølv', 0), " +
                     "(3, ?, 'Kobber', 0)",new String[]{dto.getIdcharacter()+"",dto.getIdcharacter()+"",dto.getIdcharacter()+""});
-            ResultSet rs = db.query("SELECT * FROM companiondb.races WHERE idrace = ?", new String[] {dto.getIdrace()+""});
+            //out-comment getting ability
+            /*ResultSet rs = db.query("SELECT * FROM companiondb.races WHERE idrace = ?", new String[] {dto.getIdrace()+""});
             rs.next();
             int startingAbilityID = rs.getInt("start");
-            db.update("INSERT INTO companiondb.ownedabilities (idcharacter, idability) VALUES (?, ?)",new String[]{dto.getIdcharacter()+"",startingAbilityID+""});
+            db.update("INSERT INTO companiondb.ownedabilities (idcharacter, idability) VALUES (?, ?)",new String[]{dto.getIdcharacter()+"",startingAbilityID+""});*/
             db.update("COMMIT;", new String[]{});
             db.close();
 

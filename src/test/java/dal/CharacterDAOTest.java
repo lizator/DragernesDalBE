@@ -19,4 +19,12 @@ public class CharacterDAOTest {
         CharacterDTO ret = dao.createCharacter(dto);
         assertEquals(ret.getAge(), 72);
     }
+
+    @Test
+    public void updateCharacter() {
+        CharacterDTO dto = dao.getCharacterByID(11);
+        dto.setBackground("test Works");
+        CharacterDTO ret = dao.updateCharacter(dto);
+        assertEquals(ret.getBackground(), "test Works");
+    }
 }

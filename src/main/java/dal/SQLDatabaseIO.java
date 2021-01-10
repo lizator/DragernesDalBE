@@ -26,7 +26,7 @@ public class SQLDatabaseIO {
     public SQLDatabaseIO(String USER, String PASSWORD, String URL, int PORT) {
         this.USER = USER;
         this.PASS = PASSWORD;
-        this.DatabaseURL = "jdbc:mysql://" + URL + ":"+PORT+"/"+db_name+"?characterEncoding=latin1&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
+        this.DatabaseURL = "jdbc:mysql://" + URL + ":"+PORT+"/"+db_name+"?characterEncoding=latin1&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT";
     }
 
     /**
@@ -67,6 +67,7 @@ public class SQLDatabaseIO {
             for (int i = 0; i < strings.length; i++) {
                 stmt.setString(i + 1, strings[i]);
             }
+            System.out.println(stmt.toString());
             stmt.executeUpdate();
         }
     }
