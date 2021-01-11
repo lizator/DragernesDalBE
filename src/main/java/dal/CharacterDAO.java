@@ -57,20 +57,7 @@ public class CharacterDAO {
         }
     }
 
-    public void setCharacterByEventID(int eventID, int charid, int checkedIn){
-        try {
-            db.connect();
-            db.update("START TRANSACTION;",new String[]{});
-            db.update("UPDATE companiondb.eventAttendancyList SET checkIn = ? WHERE idcharacter = ? AND idevent = ?", new String[] {checkedIn+"", charid+"", eventID+""});
-            db.update("COMMIT", new String[]{});
-            db.close();
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB with character");
-            //throw new SQLException("Error in Database");
-        }
-    }
 
     public CharacterDTO insertKrysling(int characterid, int race1id, int race2id){
         try {
