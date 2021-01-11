@@ -35,11 +35,34 @@ public class CharacterDAO {
         }
     }
 
+    public List<CharacterDTO> getCharactersByEventID(int eventID){
+        try {
+            db.connect();
+            ResultSet rs = db.query("SELECT * FROM companiondb.characterInfoView inner join companiondb.eventAttendancyList" +
+                    " on companiondb.eventAttendancyList.idcharacter = companiondb.characterInfoView.idcharacter where companiondb.eventAttendancyList.idevent = ?;", new String[] {eventID+""});
+            List<CharacterDTO> charList = new ArrayList<>();
+            while (rs.next()) {
+                CharacterDTO character = new CharacterDTO();
+                setCharacter(rs, character);
+                charList.add(character);
+            }
+            rs.close();
+            db.close();
+            return charList;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB with character");
+            //throw new SQLException("Error in Database");
+        }
+    }
+
     public CharacterDTO insertKrysling(int characterid, int race1id, int race2id){
         try {
             db.connect();
             db.update("INSERT INTO companiondb.krysling (idcharacter, race1, race2) " +
                     "VALUES (?, ?, ?)", new String[] {characterid+"", race1id+"", race2id+""});
+            db.close();
             return getCharacterByID(characterid);
 
         } catch (SQLException e) {
