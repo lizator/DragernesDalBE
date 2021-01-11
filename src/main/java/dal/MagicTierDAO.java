@@ -18,9 +18,9 @@ public class MagicTierDAO {
             ResultSet rs = db.query("SELECT * FROM companiondb.spelltiers", new String[] {});
             List<MagicTierDTO> tierList = new ArrayList<>();
             while (rs.next()) {
-                MagicTierDTO spell = new MagicTierDTO();
-                setTier(rs, spell);
-                tierList.add(spell);
+                MagicTierDTO tier = new MagicTierDTO();
+                setTier(rs, tier);
+                tierList.add(tier);
             }
             rs.close();
             db.close();
@@ -34,25 +34,12 @@ public class MagicTierDAO {
     }
 
     private void setTier(ResultSet rs, MagicTierDTO tier) throws SQLException {
-        tier.setID(rs.getInt("idspellrelation"));
+        tier.setID(rs.getInt("idtier"));
         tier.setLvl(rs.getInt("lvl"));
         tier.setSpell1ID(rs.getInt("spell1id"));
         tier.setSpell2ID(rs.getInt("spell2id"));
-        try {
-            tier.setSpell3ID(rs.getInt("spell3id"));
-        } catch (SQLException e){
-            tier.setSpell3ID(-1);
-        }
-        try {
-            tier.setSpell4ID(rs.getInt("spell4id"));
-        } catch (SQLException e){
-            tier.setSpell4ID(-1);
-        }
-        try {
-            tier.setSpell5ID(rs.getInt("spell5id"));
-        } catch (SQLException e){
-            tier.setSpell5ID(-1);
-        }
-
+        tier.setSpell3ID(rs.getInt("spell3id"));
+        tier.setSpell4ID(rs.getInt("spell4id"));
+        tier.setSpell5ID(rs.getInt("spell5id"));
     }
 }
