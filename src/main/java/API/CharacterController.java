@@ -4,6 +4,7 @@ import dal.CharacterDAO;
 import dal.dto.CharacterDTO;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -23,6 +24,12 @@ public class CharacterController {
     @GetMapping(value = "/character/byEventID/{eventid}/{checkin}", produces = "application/json")
     public List<CharacterDTO> getCharacterByEventID(@PathVariable int eventid, @PathVariable int checkin){
         return dao.getCharactersByEventID(eventid,checkin);
+    }
+
+    @GetMapping(value = "/character/setByEventID/{eventid}/{checkin}/{charid}", produces = "application/json")
+    public List<CharacterDTO> setCharacterByEventID(@PathVariable int eventid, @PathVariable int checkin, @PathVariable int charid){
+        dao.setCharacterByEventID(eventid, charid,checkin);
+        return new ArrayList<CharacterDTO>();
     }
 
     @PostMapping(value = "/character/create", consumes = "application/json", produces = "application/json")
