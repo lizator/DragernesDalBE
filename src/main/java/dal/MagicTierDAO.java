@@ -34,10 +34,25 @@ public class MagicTierDAO {
     }
 
     private void setTier(ResultSet rs, MagicTierDTO tier) throws SQLException {
-        tier.setID(rs.getInt("idspells"));
+        tier.setID(rs.getInt("idspellrelation"));
         tier.setLvl(rs.getInt("lvl"));
         tier.setSpell1ID(rs.getInt("spell1id"));
         tier.setSpell2ID(rs.getInt("spell2id"));
-        tier.setSpell3ID(rs.getInt("spell3id"));
+        try {
+            tier.setSpell3ID(rs.getInt("spell3id"));
+        } catch (SQLException e){
+            tier.setSpell3ID(-1);
+        }
+        try {
+            tier.setSpell4ID(rs.getInt("spell4id"));
+        } catch (SQLException e){
+            tier.setSpell4ID(-1);
+        }
+        try {
+            tier.setSpell5ID(rs.getInt("spell5id"));
+        } catch (SQLException e){
+            tier.setSpell5ID(-1);
+        }
+
     }
 }
