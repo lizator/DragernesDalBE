@@ -35,11 +35,11 @@ public class CharacterDAO {
         }
     }
 
-    public List<CharacterDTO> getCharactersByEventID(int eventID){
+    public List<CharacterDTO> getCharactersByEventID(int eventID, int checkedIn){
         try {
             db.connect();
             ResultSet rs = db.query("SELECT * FROM companiondb.characterInfoView inner join companiondb.eventAttendancyList" +
-                    " on companiondb.eventAttendancyList.idcharacter = companiondb.characterInfoView.idcharacter where companiondb.eventAttendancyList.idevent = ?;", new String[] {eventID+""});
+                    " on companiondb.eventAttendancyList.idcharacter = companiondb.characterInfoView.idcharacter where companiondb.eventAttendancyList.idevent = ? and eventAttendancyList.checkIn = ?;", new String[] {eventID+"",checkedIn+""});
             List<CharacterDTO> charList = new ArrayList<>();
             while (rs.next()) {
                 CharacterDTO character = new CharacterDTO();

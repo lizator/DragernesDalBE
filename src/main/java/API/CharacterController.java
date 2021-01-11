@@ -20,9 +20,9 @@ public class CharacterController {
         return dao.getCharactersByUserID(userid);
     }
 
-    @GetMapping(value = "/character/byEventID/{eventid}", produces = "application/json")
-    public List<CharacterDTO> getCharacterByEventID(@PathVariable int eventid){
-        return dao.getCharactersByEventID(eventid);
+    @GetMapping(value = "/character/byEventID/{eventid}/{checkin}", produces = "application/json")
+    public List<CharacterDTO> getCharacterByEventID(@PathVariable int eventid, @PathVariable int checkin){
+        return dao.getCharactersByEventID(eventid,checkin);
     }
 
     @PostMapping(value = "/character/create", consumes = "application/json", produces = "application/json")
