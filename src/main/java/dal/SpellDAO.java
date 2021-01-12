@@ -38,7 +38,7 @@ public class SpellDAO {
         spell.setSpellname(rs.getString("namespell"));
         spell.setDesc(rs.getString("descspell"));
         spell.setItem(rs.getString("item"));
-        spell.setDesc(rs.getString("duration"));
+        spell.setDuration(rs.getString("duration"));
     }
 
 }

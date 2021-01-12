@@ -2,18 +2,18 @@ package dal.dto;
 
 
 public class SpellDTO {
-    private int ID;
+    private int id;
     private String spellname;
     private String desc;
     private String item;
     private String duration;
 
     public int getID() {
-        return ID;
+        return id;
     }
 
     public void setID(int ID) {
-        this.ID = ID;
+        this.id = ID;
     }
 
     public String getSpellname() {
