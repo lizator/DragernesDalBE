@@ -43,14 +43,15 @@ public class EventDAO {
         eventDTO.setName(rs.getString("name"));
         eventDTO.setStartDate(rs.getTimestamp("startDate"));
         eventDTO.setEndDate(rs.getTimestamp("endDate"));
+        eventDTO.setHyperlink(rs.getString("hyperlink"));
     }
 
     public EventDTO createEvent(EventDTO dto) {
         try {
             db.connect();
             db.update("START TRANSACTION;",new String[]{});
-            db.update("INSERT INTO companiondb.events (name, startDate, endDate, address, info) VALUES (?,?,?,?,?)",
-                    new String[] {dto.getName()+"",dto.getStartDate()+"",dto.getEndDate()+"",dto.getAddress()+"",dto.getInfo()+""});
+            db.update("INSERT INTO companiondb.events (name, startDate, endDate, address, info, hyperlink) VALUES (?,?,?,?,?, ?)",
+                    new String[] {dto.getName()+"",dto.getStartDate()+"",dto.getEndDate()+"",dto.getAddress()+"",dto.getInfo()+"",dto.getHyperlink()+""});
             db.update("COMMIT", new String[]{});
             db.close();
 
@@ -71,13 +72,15 @@ public class EventDAO {
                     "startDate = ?, " +
                     "endDate = ?, " +
                     "address = ?, " +
-                    "info = ? " +
+                    "info = ?, " +
+                    "hyperlink = ?" +
                     "WHERE idevents = ?;", new String[]{
                     dto.getName()+"",
                     dto.getStartDate()+"",
                     dto.getEndDate()+"",
                     dto.getAddress()+"",
                     dto.getInfo()+"",
+                    dto.getHyperlink()+"",
                     dto.getEventID()+""});
             db.close();
             System.out.println(dto.getStartDate());
