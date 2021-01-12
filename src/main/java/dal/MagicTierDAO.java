@@ -36,7 +36,7 @@ public class MagicTierDAO {
     public List<MagicTierDTO> getTiersByCharID(int characterID){
         try {
             db.connect();
-            ResultSet rs = db.query("SELECT * FROM companiondb.ownedspelltiers", new String[] {});
+            ResultSet rs = db.query("SELECT * FROM companiondb.ownedspelltiers WHERE idcharacter = ?", new String[] {characterID+""});
             ArrayList<Integer> tierIDs = new ArrayList<>();
             while(rs.next()){
                 tierIDs.add(rs.getInt("idspelltier"));
