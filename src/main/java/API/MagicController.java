@@ -1,12 +1,15 @@
 package API;
 
 import dal.*;
+import dal.dto.CharacterDTO;
 import dal.dto.MagicSchoolDTO;
 import dal.dto.MagicTierDTO;
 import dal.dto.SpellDTO;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -14,6 +17,7 @@ import java.util.List;
 public class MagicController {
     SpellDAO spellDAO = new SpellDAO();
     MagicTierDAO tierDAO = new MagicTierDAO();
+    CharacterDAO characterDAO = new CharacterDAO();
     MagicSchoolDAO schoolDAO = new MagicSchoolDAO();
 
 
@@ -35,6 +39,24 @@ public class MagicController {
     @GetMapping(value = "/magic/bycharid/{characterID}", produces = "application/json")
     public List<MagicTierDTO> getTiersByCharacterID(@PathVariable int characterID){
         return tierDAO.getTiersByCharID(characterID);
+    }
+
+    @GetMapping(value = "/magic/buy/{characterid}/{tierid}/{cost}", produces = "application/json")
+    public MagicTierDTO buyTier(@PathVariable int characterid, @PathVariable int tierid, @PathVariable int cost){
+        CharacterDTO characterDTO = characterDAO.getCharacterByID(characterid); //getting character
+
+        //test for if able to buy (security)
+        if (cost > characterDTO.getCurrentep()) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Not enough EP");
+
+        characterDTO.setCurrentep(characterDTO.getCurrentep() - cost);          //setting new EP
+        characterDAO.updateCharacter(characterDTO);
+
+        return tierDAO.insertTierBought(characterid, tierid);
+    }
+
+    @GetMapping(value = "/magic/getfree/{characterid}/{tierid}", produces = "application/json")
+    public MagicTierDTO getFreeTier(@PathVariable int characterid, @PathVariable int tierid){
+        return tierDAO.insertTierBought(characterid, tierid);
     }
 
 

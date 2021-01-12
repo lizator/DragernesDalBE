@@ -120,7 +120,7 @@ public class AbilityDAO {
     public AbilityDTO buyAbility(int characterID, int abilityID){
         try {
             db.connect();
-            db.update("INSERT INTO companiondb.owningAbilitiesView (idcharacter, idability) VALUES (?,?)",
+            db.update("INSERT INTO companiondb.ownedabilities (idcharacter, idability) VALUES (?,?)",
                     new String[]{characterID+"",abilityID+""});
             return getAbilityByID(abilityID);
 

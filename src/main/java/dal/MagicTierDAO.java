@@ -62,6 +62,37 @@ public class MagicTierDAO {
         }
     }
 
+    public MagicTierDTO insertTierBought(int characterid, int tierid){
+        try {
+            db.connect();
+            db.update("INSERT INTO companiondb.ownedspelltiers (idcharacter, idspelltier) VALUES (?,?)",
+                    new String[]{characterid+"",tierid+""});
+            db.close();
+            return getByID(tierid);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB with spells");
+            //throw new SQLException("Error in Database");
+        }
+    }
+
+    public MagicTierDTO getByID(int tierID){
+        try {
+            db.connect();
+            ResultSet rs = db.query("SELECT * FROM companiondb.spelltiers WHERE idtier = ?", new String[] {tierID+""});
+            rs.next();
+            MagicTierDTO dto = new MagicTierDTO();
+            setTier(rs, dto);
+            rs.close();
+            db.close();
+            return dto;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB with spells");
+            //throw new SQLException("Error in Database");
+        }
+    }
+
     private void setTier(ResultSet rs, MagicTierDTO tier) throws SQLException {
         tier.setID(rs.getInt("idtier"));
         tier.setLvl(rs.getInt("lvl"));
