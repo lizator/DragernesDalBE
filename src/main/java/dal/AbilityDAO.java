@@ -1,7 +1,6 @@
 package dal;
 
 import dal.dto.AbilityDTO;
-import dal.dto.ProfileDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 import java.sql.ResultSet;

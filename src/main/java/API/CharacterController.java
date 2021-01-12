@@ -37,7 +37,6 @@ public class CharacterController {
         return dao.insertKrysling(characterid, race1id, race2id);
     }
 
-
     @PostMapping(value = "/character/update", consumes = "application/json", produces = "application/json")
     public CharacterDTO updateCharacter(@RequestBody CharacterDTO dto){
         return dao.updateCharacter(dto);
