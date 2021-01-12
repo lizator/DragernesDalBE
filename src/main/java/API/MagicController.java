@@ -5,6 +5,7 @@ import dal.dto.MagicSchoolDTO;
 import dal.dto.MagicTierDTO;
 import dal.dto.SpellDTO;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -30,6 +31,13 @@ public class MagicController {
     public List<MagicSchoolDTO> getAllSchools(){
         return schoolDAO.getAllSchools();
     }
+
+    @GetMapping(value = "/magic/bycharid/{characterID}", produces = "application/json")
+    public List<MagicTierDTO> getTiersByCharacterID(@PathVariable int characterID){
+        return tierDAO.getTiersByCharID(characterID);
+    }
+
+
 
 
 }

@@ -33,6 +33,35 @@ public class MagicTierDAO {
         }
     }
 
+    public List<MagicTierDTO> getTiersByCharID(int characterID){
+        try {
+            db.connect();
+            ResultSet rs = db.query("SELECT * FROM companiondb.ownedspelltiers", new String[] {});
+            ArrayList<Integer> tierIDs = new ArrayList<>();
+            while(rs.next()){
+                tierIDs.add(rs.getInt("idspelltier"));
+            }
+            rs.close();
+            List<MagicTierDTO> tierList = new ArrayList<>();
+            for (int id : tierIDs){
+                ResultSet rs2 = db.query("SELECT * FROM companiondb.spelltiers WHERE idtier = ?", new String[] {id+""});
+                rs2.next();
+                MagicTierDTO dto = new MagicTierDTO();
+                setTier(rs2, dto);
+                tierList.add(dto);
+                rs2.close();
+            }
+
+            db.close();
+            return tierList;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB with spells");
+            //throw new SQLException("Error in Database");
+        }
+    }
+
     private void setTier(ResultSet rs, MagicTierDTO tier) throws SQLException {
         tier.setID(rs.getInt("idtier"));
         tier.setLvl(rs.getInt("lvl"));

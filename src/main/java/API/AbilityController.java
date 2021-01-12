@@ -5,9 +5,7 @@ import dal.CharacterDAO;
 import dal.dto.AbilityDTO;
 import dal.dto.CharacterDTO;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
@@ -80,8 +78,8 @@ public class AbilityController {
         return ls;
     }
 
-    @GetMapping(value = "/ability/craft/{characterID}/{craft}", produces = "application/json")
-    public AbilityDTO buyAbility(@PathVariable int characterID, @PathVariable String craft){
+    @PostMapping(value = "/ability/craft/{characterID}", produces = "application/json")
+    public AbilityDTO buyAbility(@PathVariable int characterID, @RequestBody AbilityDTO craft){
 
         CharacterDTO characterDTO = characterDAO.getCharacterByID(characterID); //getting character
         int cost = 1;                     //getting cost for new ability
@@ -91,7 +89,7 @@ public class AbilityController {
 
         characterDTO.setCurrentep(characterDTO.getCurrentep() - cost);          //setting new EP
         characterDAO.updateCharacter(characterDTO);                             //saving character
-        AbilityDTO newdto = dao.addCraft(craft);                                //adding new craft to DB
+        AbilityDTO newdto = dao.addCraft(craft.getName());                                //adding new craft to DB
         AbilityDTO dto = dao.buyAbility(characterID, newdto.getId());           //adding ability to character
         return dto;
     }
