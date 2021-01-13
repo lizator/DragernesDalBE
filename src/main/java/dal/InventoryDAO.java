@@ -118,6 +118,22 @@ public class InventoryDAO {
         }
     }
 
+    public String getState(int relationID){
+        try {
+            db.connect();
+            ResultSet rs = db.query("SELECT * FROM companiondb.inventoryrelation WHERE idinventoryrelation = ?", new String[]{relationID+""});
+            rs.next();
+            String status = rs.getString("Status");
+            rs.close();
+            db.close();
+            return status;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB with inventory");
+            //throw new SQLException("Error in Database");
+        }
+    }
+
     public void setupCharacterInventory(int characterid){
         try {
             int relationid = getNextID();
