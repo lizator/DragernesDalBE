@@ -128,11 +128,10 @@ public class CharacterDAO {
     public CharacterDTO createCharacter(CharacterDTO dto){
         try {
             dto.setIdcharacter(getNextID()); //Get ID assigned
-            dto.setStatus("aktiv");
             db.connect();
             db.update("START TRANSACTION;",new String[]{});
             db.update("INSERT INTO companiondb.character (idcharacter, iduser, " +
-                    "namecharacter, idrace, age, status, background) VALUES (?, ?, ?, ?, ?, ?, ?)",new String[] {dto.getIdcharacter()+"",dto.getIduser()+"",dto.getName(),dto.getIdrace()+"",dto.getAge()+"",dto.getStatus(),dto.getBackground()});
+                    "namecharacter, idrace, age, background) VALUES (?, ?, ?, ?, ?, ?)",new String[] {dto.getIdcharacter()+"",dto.getIduser()+"",dto.getName(),dto.getIdrace()+"",dto.getAge()+"",dto.getBackground()});
             db.update("INSERT INTO companiondb.inventory (iditem, idcharacter, itemname, amount) " +
                     "VALUES " +
                     "(1, ?, 'Guld', 0), " +
@@ -165,9 +164,6 @@ public class CharacterDAO {
         character.setRaceName(rs.getString("racename"));
         character.setAge(rs.getInt("age"));
         character.setCurrentep(rs.getInt("currentep"));
-        character.setStatus(rs.getString("status"));
-        character.setDate(rs.getDate("date"));
-        character.setTimestamp(rs.getTime("timestamp"));
         character.setStrength(rs.getInt("strength"));
         character.setHealth(rs.getInt("health"));
         character.setBackground(rs.getString("background"));
