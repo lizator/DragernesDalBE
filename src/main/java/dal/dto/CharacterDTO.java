@@ -11,16 +11,22 @@ public class CharacterDTO {
     String raceName;
     int age;
     int currentep;
-    String status;
-    Date date;
-    Time timestamp;
     int strength;
     int health;
     String background;
 
-    public CharacterDTO(){}
+    public CharacterDTO() {
+    }
 
-    public CharacterDTO(int idcharacter, int iduser, String name, int idrace, String raceName, int age, int currentep, String status, Date date, Time timestamp, int strength, int health, String background) {
+    public CharacterDTO(int idcharacter, int iduser, String name, int idrace, int age) {
+        this.idcharacter = idcharacter;
+        this.iduser = iduser;
+        this.name = name;
+        this.idrace = idrace;
+        this.age = age;
+    }
+
+    public CharacterDTO(int idcharacter, int iduser, String name, int idrace, String raceName, int age, int currentep, String status, String date, String timestamp, int strength, int health) {
         this.idcharacter = idcharacter;
         this.iduser = iduser;
         this.name = name;
@@ -28,12 +34,8 @@ public class CharacterDTO {
         this.raceName = raceName;
         this.age = age;
         this.currentep = currentep;
-        this.status = status;
-        this.date = date;
-        this.timestamp = timestamp;
         this.strength = strength;
         this.health = health;
-        this.background = background;
     }
 
     public int getIdcharacter() {
@@ -90,30 +92,6 @@ public class CharacterDTO {
 
     public void setCurrentep(int currentep) {
         this.currentep = currentep;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
-    public Time getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(Time timestamp) {
-        this.timestamp = timestamp;
     }
 
     public int getStrength() {
