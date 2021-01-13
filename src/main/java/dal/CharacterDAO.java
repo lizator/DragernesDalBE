@@ -11,6 +11,7 @@ import java.util.List;
 
 public class CharacterDAO {
     private final SQLDatabaseIO db = new SQLDatabaseIO("kamel", "dreng", "runerne.dk", 8003);
+    InventoryDAO inventoryDAO = new InventoryDAO();
 
     public CharacterDAO(){}
 
@@ -132,19 +133,10 @@ public class CharacterDAO {
             db.update("START TRANSACTION;",new String[]{});
             db.update("INSERT INTO companiondb.character (idcharacter, iduser, " +
                     "namecharacter, idrace, age, background) VALUES (?, ?, ?, ?, ?, ?)",new String[] {dto.getIdcharacter()+"",dto.getIduser()+"",dto.getName(),dto.getIdrace()+"",dto.getAge()+"",dto.getBackground()});
-            db.update("INSERT INTO companiondb.inventory (iditem, idcharacter, itemname, amount) " +
-                    "VALUES " +
-                    "(1, ?, 'Guld', 0), " +
-                    "(2, ?, 'Sølv', 0), " +
-                    "(3, ?, 'Kobber', 0)",new String[]{dto.getIdcharacter()+"",dto.getIdcharacter()+"",dto.getIdcharacter()+""});
-            //out-comment getting ability
-            /*ResultSet rs = db.query("SELECT * FROM companiondb.races WHERE idrace = ?", new String[] {dto.getIdrace()+""});
-            rs.next();
-            int startingAbilityID = rs.getInt("start");
-            db.update("INSERT INTO companiondb.ownedabilities (idcharacter, idability) VALUES (?, ?)",new String[]{dto.getIdcharacter()+"",startingAbilityID+""});*/
             db.update("COMMIT;", new String[]{});
             db.close();
 
+            inventoryDAO.setupCharacterInventory(dto.getIdcharacter());
             CharacterDTO character = getCharacterByID(dto.getIdcharacter());
             return character;
 

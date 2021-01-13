@@ -1,18 +1,26 @@
 package dal.dto;
 
 public class InventoryDTO {
+    int idinventoryrelation;
     int idItem;
-    int idCharacter;
     String itemName;
     int amount;
 
     public InventoryDTO() {}
 
-    public InventoryDTO(int idItem, int idCharacter, String itemName, int amount) {
+    public InventoryDTO(int idRelation, int idItem, String itemName, int amount) {
+        this.idinventoryrelation = idRelation;
         this.idItem = idItem;
-        this.idCharacter = idCharacter;
         this.itemName = itemName;
         this.amount = amount;
+    }
+
+    public int getIdInventoryRelation() {
+        return idinventoryrelation;
+    }
+
+    public void setIdInventoryRelation(int idInventoryRelation) {
+        this.idinventoryrelation = idInventoryRelation;
     }
 
     public int getIdItem() {
@@ -21,14 +29,6 @@ public class InventoryDTO {
 
     public void setIdItem(int idItem) {
         this.idItem = idItem;
-    }
-
-    public int getIdCharacter() {
-        return idCharacter;
-    }
-
-    public void setIdCharacter(int idCharacter) {
-        this.idCharacter = idCharacter;
     }
 
     public String getItemName() {
