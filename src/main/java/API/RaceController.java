@@ -1,11 +1,10 @@
 package API;
 
 import dal.RaceDAO;
+import dal.dto.CharacterDTO;
 import dal.dto.InventoryDTO;
 import dal.dto.RaceDTO;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -26,6 +25,11 @@ public class RaceController {
     @GetMapping(value = "/race/krys/getCharacterRaces/{characterid}", produces = "application/json")
     public List<RaceDTO> getCharacterRaces(@PathVariable int characterid){
         return dao.getCharacterRaces(characterid);
+    }
+
+    @PostMapping(value = "/race/create", consumes = "application/json", produces = "application/json")
+    public RaceDTO createRace(@RequestBody RaceDTO dto){
+        return dao.createRace(dto);
     }
 
 }

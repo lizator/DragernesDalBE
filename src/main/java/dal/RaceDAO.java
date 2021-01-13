@@ -34,7 +34,22 @@ public class RaceDAO {
             //throw new SQLException("Error in Database");
         }
     }
+    public RaceDTO createRace(RaceDTO dto){
+        try {
+            db.connect();
+            db.update("START TRANSACTION;",new String[]{});
+            db.update("INSERT INTO companiondb.races (racename, start, 2ep, 3ep, 4ep)" +
+                    " VALUES (?,?,?,?,?)",new String[] {dto.getRacename()+"",dto.getStart()+"",dto.getEp2()+"",dto.getEp3()+"",dto.getEp4()+""});
+                        db.update("COMMIT;", new String[]{});
+            db.close();
+            return dto;
 
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB: creating character");
+            //throw new SQLException("Error in Database");
+        }
+    }
     public RaceDTO getRace(int raceID){
         try {
             db.connect();
@@ -87,6 +102,5 @@ public class RaceDAO {
         race.setEp2(rs.getInt("2ep"));
         race.setEp3(rs.getInt("3ep"));
         race.setEp4(rs.getInt("4ep"));
-        race.setDesc(rs.getString("desc"));
     }
 }
