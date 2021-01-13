@@ -16,6 +16,10 @@ public class RaceController {
     public List<RaceDTO> getRacesStandart(){
         return dao.getRacesStandart();
     }
+    @GetMapping(value = "/race/info/custom", produces = "application/json")
+    public List<RaceDTO> getRacesCustom(){
+        return dao.getCustomRaces();
+    }
 
     @GetMapping(value = "/race/info/single/{raceID}", produces = "application/json")
     public RaceDTO getRaceinfo(@PathVariable int raceID){
@@ -30,6 +34,11 @@ public class RaceController {
     @PostMapping(value = "/race/create", consumes = "application/json", produces = "application/json")
     public RaceDTO createRace(@RequestBody RaceDTO dto){
         return dao.createRace(dto);
+    }
+
+    @PostMapping(value = "/race/update", consumes = "application/json", produces = "application/json")
+    public RaceDTO updateRace(@RequestBody RaceDTO dto){
+        return dao.updateRace(dto);
     }
 
 }
