@@ -17,7 +17,7 @@ public class CharacterDAO {
     public List<CharacterDTO> getCharactersByUserID(int userID){
         try {
             db.connect();
-            ResultSet rs = db.query("SELECT * FROM companiondb.characterInfoView WHERE iduser = ? AND status = 'aktiv'", new String[] {userID+""});
+            ResultSet rs = db.query("SELECT * FROM companiondb.characterInfoView WHERE iduser = ?", new String[] {userID+""});
             List<CharacterDTO> charList = new ArrayList<>();
             while (rs.next()) {
                 CharacterDTO character = new CharacterDTO();

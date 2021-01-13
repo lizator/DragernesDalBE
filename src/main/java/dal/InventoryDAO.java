@@ -13,7 +13,9 @@ public class InventoryDAO {
     private final SQLDatabaseIO db = new SQLDatabaseIO("kamel", "dreng", "runerne.dk", 8003);
 
     public List<InventoryDTO> getInventoryByCharacterID(int characterid) {
-        try {
+        return null;
+        /*try {
+
             db.connect();
             ResultSet rs = db.query("SELECT * FROM companiondb.inventory WHERE idcharacter = ?", new String[]{characterid+""});
             List<InventoryDTO> itemList = new ArrayList<>();
@@ -30,7 +32,7 @@ public class InventoryDAO {
             e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB with character");
             //throw new SQLException("Error in Database");
-        }
+        }*/
     }
 
     private void setItem(ResultSet rs, InventoryDTO item) throws SQLException {
