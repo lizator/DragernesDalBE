@@ -12,8 +12,13 @@ import java.util.List;
 public class InventoryController {
     InventoryDAO dao = new InventoryDAO();
 
-    @GetMapping(value = "/inventory/byCharacterID/{characterid}", produces = "application/json") //Works
-    public List<InventoryDTO> getCharacterByID(@PathVariable int characterid){
-        return dao.getInventoryByCharacterID(characterid);
+    @GetMapping(value = "/inventory/actualByCharacterID/{characterid}", produces = "application/json") //Works
+    public List<InventoryDTO> getInvetory(@PathVariable int characterid){
+        return dao.getInventoryByCharacterIDWithUpdate(characterid);
+    }
+
+    @GetMapping(value = "/inventory/currentByCharacterID/{characterid}", produces = "application/json") //Works
+    public List<InventoryDTO> getCurrentInvetory(@PathVariable int characterid){
+        return dao.getCurrentInventoryByCharacterID(characterid);
     }
 }
