@@ -26,6 +26,11 @@ public class AbilityController {
         return dao.getAbilitiesByRaceID(raceID);
     }
 
+    @GetMapping(value = "/ability/allUnCommonAbilities", produces = "application/json")
+    public List<AbilityDTO> getAllUncommonAbilities(){
+        return dao.getAllUnCommonAbilities();
+    }
+
     @GetMapping(value = "/ability/raceStaters", produces = "application/json")
     public List<AbilityDTO> getRacestartersAbilities(){
         return dao.getRacestartersAbilities();

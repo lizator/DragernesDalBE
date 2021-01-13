@@ -32,6 +32,27 @@ public class AbilityDAO {
         }
     }
 
+    public List<AbilityDTO> getAllUnCommonAbilities(){
+        try {
+            db.connect();
+            ResultSet rs = db.query("SELECT * FROM companiondb.abilities WHERE type != 'Viden' AND type != 'Sniger' AND type != 'Allemand' AND type != 'Kamp' AND type != 'Bad' AND type != 'Håndværk';", new String[] {});
+            List<AbilityDTO> abilityList = new ArrayList<>();
+            while(rs.next()){
+                AbilityDTO ability = new AbilityDTO();
+                setAbility(rs, ability);
+                abilityList.add(ability);
+            }
+            rs.close();
+            db.close();
+            return abilityList;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB with character");
+            //throw new SQLException("Error in Database");
+        }
+    }
+
     public List<AbilityDTO> getAbilitiesByRaceID(int raceID) {
         try {
             db.connect();
