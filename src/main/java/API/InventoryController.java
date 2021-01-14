@@ -26,7 +26,7 @@ public class InventoryController {
         return dao.getState(relationid);
     }
 
-    @PostMapping(value = "/inventory/save/{characterID}", consumes = "application/json", produces = "application/json")
+    @PostMapping(value = "/inventory/save/{characterid}", consumes = "application/json", produces = "application/json")
     public List<InventoryDTO> saveInvetory(@PathVariable int characterid, @RequestBody ArrayList<InventoryDTO> inventory){
         return dao.saveInventoryForUpdate(characterid, inventory);
     }
