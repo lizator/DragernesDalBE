@@ -168,6 +168,25 @@ public class AbilityDAO {
         }
     }
 
+    public ArrayList<String> getTypes(){
+        ArrayList<String> types = new ArrayList<>();
+        try {
+            db.connect();
+            ResultSet rs = db.query("SELECT DISTINCT companiondb.abilities.type FROM abilities;", new String[]{});
+            while (rs.next()) {
+                types.add(rs.getString("type"));
+            }
+            rs.close();
+            db.close();
+            return types;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB with types");
+            //throw new SQLException("Error in Database");
+        }
+    }
+
     public int getNextID(){
         try {
             db.connect();
