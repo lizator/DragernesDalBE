@@ -154,12 +154,12 @@ public class InventoryDAO {
         }
     }
 
-    public InventoryDTO denyRelation(int relationid){
+    public InventoryDTO denyCharacter(int characterid){
         try {
             db.connect();
-            db.update("UPDATE companiondb.character SET " +
+            db.update("UPDATE companiondb.inventoryrelation SET " +
                     "Status = 'denied' " +
-                    "WHERE idinventoryrelation = ?;", new String[]{relationid+""});
+                    "WHERE idcharacter = ? AND Status = 'update';", new String[]{characterid+""});
             db.close();
             InventoryDTO dto = new InventoryDTO();
             dto.setAmount(1);
@@ -176,7 +176,7 @@ public class InventoryDAO {
             db.connect();
             ResultSet rs = db.query("SELECT * FROM companiondb.inventoryrelation WHERE Status = 'update'", new String[]{});
             while (rs.next()){
-                db.update("UPDATE companiondb.character SET " +
+                db.update("UPDATE companiondb.inventoryrelation SET " +
                         "Status = 'denied' " +
                         "WHERE idinventoryrelation = ?;", new String[]{rs.getInt("idinventoryrelation")+""});
             }
@@ -199,7 +199,7 @@ public class InventoryDAO {
             ResultSet rsOld = db.query("SELECT * FROM companiondb.inventoryrelation WHERE idcharacter = ? AND Status = 'current'", new String[]{characterid+""});
             rsOld.next();
             int oldID = rsOld.getInt("idinventoryrelation");
-            db.update("UPDATE companiondb.character SET " +
+            db.update("UPDATE companiondb.inventoryrelation SET " +
                     "Status = 'old' " +
                     "WHERE idinventoryrelation = ?;", new String[]{oldID+""});
             rsOld.close();
@@ -207,7 +207,7 @@ public class InventoryDAO {
             ResultSet rsNew = db.query("SELECT * FROM companiondb.inventoryrelation WHERE idcharacter = ? AND Status = 'update'", new String[]{characterid+""});
             rsNew.next();
             int relationid = rsNew.getInt("idinventoryrelation");
-            db.update("UPDATE companiondb.character SET " +
+            db.update("UPDATE companiondb.inventoryrelation SET " +
                     "Status = 'current' " +
                     "WHERE idinventoryrelation = ?;", new String[]{relationid+""});
             rsNew.close();
@@ -222,8 +222,6 @@ public class InventoryDAO {
             //throw new SQLException("Error in Database");
         }
     }
-
-
 
     private int getNextID(){
         try {
