@@ -1,6 +1,7 @@
 package dal;
 
 import dal.dto.AbilityDTO;
+import dal.dto.EventDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 import java.sql.ResultSet;
@@ -185,6 +186,24 @@ public class AbilityDAO {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB with types");
             //throw new SQLException("Error in Database");
         }
+    }
+
+    public AbilityDTO createAbility(AbilityDTO dto) {
+        try {
+            db.connect();
+            db.update("START TRANSACTION;",new String[]{});
+            db.update("INSERT INTO companiondb.abilities (nameability, cost, type, shortdesc) VALUES (?,?,?,?)",
+                    new String[] {dto.getName(),dto.getCost()+"",dto.getType(),dto.getDesc()});
+            db.update("COMMIT", new String[]{});
+            db.close();
+
+            return new AbilityDTO();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB: creating event");
+        }
+
     }
 
     public int getNextID(){

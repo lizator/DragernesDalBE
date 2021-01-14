@@ -4,6 +4,7 @@ import dal.AbilityDAO;
 import dal.CharacterDAO;
 import dal.dto.AbilityDTO;
 import dal.dto.CharacterDTO;
+import dal.dto.EventDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -86,6 +87,11 @@ public class AbilityController {
         ls.add(getFreeAbility(characterID, abilityID));
         ls.add(getFreeAbility(characterID, freeAbilityID));
         return ls;
+    }
+
+    @PostMapping(value = "/ability/create", consumes = "application/json", produces = "application/json")
+    public AbilityDTO createEvent(@RequestBody AbilityDTO dto) {
+        return dao.createAbility(dto);
     }
 
     @PostMapping(value = "/ability/craft/{characterID}", produces = "application/json")
