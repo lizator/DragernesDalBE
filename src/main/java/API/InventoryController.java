@@ -26,14 +26,14 @@ public class InventoryController {
         return dao.getState(relationid);
     }
 
-    @PostMapping(value = "/inventory/save/{characterID}", consumes = "application/json", produces = "application/json")
+    @PostMapping(value = "/inventory/save/{characterid}", consumes = "application/json", produces = "application/json")
     public List<InventoryDTO> saveInvetory(@PathVariable int characterid, @RequestBody ArrayList<InventoryDTO> inventory){
         return dao.saveInventoryForUpdate(characterid, inventory);
     }
 
-    @GetMapping(value = "/inventory/deny/{relationid}", produces = "application/json")
-    public InventoryDTO deny(@PathVariable int relationid){
-        return dao.denyRelation(relationid);
+    @GetMapping(value = "/inventory/deny/{characterid}", produces = "application/json")
+    public InventoryDTO deny(@PathVariable int characterid){
+        return dao.denyCharacter(characterid);
     }
 
     @GetMapping(value = "/inventory/denyall", produces = "application/json")
