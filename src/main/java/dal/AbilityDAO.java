@@ -16,15 +16,7 @@ public class AbilityDAO {
         try {
             db.connect();
             ResultSet rs = db.query("SELECT * FROM companiondb.owningAbilitiesView WHERE idcharacter = ?", new String[] {characterid+""});
-            List<AbilityDTO> abilityList = new ArrayList<>();
-            while (rs.next()) {
-                AbilityDTO ability = new AbilityDTO();
-                setAbility(rs, ability);
-                abilityList.add(ability);
-            }
-            rs.close();
-            db.close();
-            return abilityList;
+            return getAbilityDTOS(rs);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -37,21 +29,38 @@ public class AbilityDAO {
         try {
             db.connect();
             ResultSet rs = db.query("SELECT * FROM companiondb.abilities WHERE type != 'Viden' AND type != 'Sniger' AND type != 'Allemand' AND type != 'Kamp' AND type != 'Bad' AND type != 'Håndværk';", new String[] {});
-            List<AbilityDTO> abilityList = new ArrayList<>();
-            while(rs.next()){
-                AbilityDTO ability = new AbilityDTO();
-                setAbility(rs, ability);
-                abilityList.add(ability);
-            }
-            rs.close();
-            db.close();
-            return abilityList;
+            return getAbilityDTOS(rs);
 
         } catch (SQLException e) {
             e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB with character");
             //throw new SQLException("Error in Database");
         }
+    }
+
+    public List<AbilityDTO> getAll(){
+        try {
+            db.connect();
+            ResultSet rs = db.query("SELECT * FROM companiondb.abilities;", new String[] {});
+            return getAbilityDTOS(rs);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB with character");
+            //throw new SQLException("Error in Database");
+        }
+    }
+
+    private List<AbilityDTO> getAbilityDTOS(ResultSet rs) throws SQLException {
+        List<AbilityDTO> abilityList = new ArrayList<>();
+        while(rs.next()){
+            AbilityDTO ability = new AbilityDTO();
+            setAbility(rs, ability);
+            abilityList.add(ability);
+        }
+        rs.close();
+        db.close();
+        return abilityList;
     }
 
     public List<AbilityDTO> getAbilitiesByRaceID(int raceID) {
@@ -84,15 +93,7 @@ public class AbilityDAO {
         try {
             db.connect();
             ResultSet rs = db.query("SELECT * FROM companiondb.abilities WHERE cost = 0 AND type = 'Race' AND idability < 39", new String[] {});
-            List<AbilityDTO> abilityList = new ArrayList<>();
-            while(rs.next()){
-                AbilityDTO ability = new AbilityDTO();
-                setAbility(rs, ability);
-                abilityList.add(ability);
-            }
-            rs.close();
-            db.close();
-            return abilityList;
+            return getAbilityDTOS(rs);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -105,15 +106,7 @@ public class AbilityDAO {
         try {
             db.connect();
             ResultSet rs = db.query("SELECT * FROM companiondb.abilities WHERE type = ? ORDER BY nameability", new String[] {type});
-            List<AbilityDTO> abilityList = new ArrayList<>();
-            while (rs.next()) {
-                AbilityDTO ability = new AbilityDTO();
-                setAbility(rs, ability);
-                abilityList.add(ability);
-            }
-            rs.close();
-            db.close();
-            return abilityList;
+            return getAbilityDTOS(rs);
         } catch (SQLException e) {
             e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB with character");
@@ -203,7 +196,28 @@ public class AbilityDAO {
             e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB: creating event");
         }
+    }
 
+    public AbilityDTO updateAbility(AbilityDTO dto) {
+        try {
+            db.connect();
+            db.update("START TRANSACTION;",new String[]{});
+            db.update("UPDATE companiondb.abilities SET " +
+                            "nameability = ?, " +
+                            "cost = ?, " +
+                            "type = ?, " +
+                            "shortdesc = ? "+
+                            "WHERE idability = ?;",
+                    new String[] {dto.getName(),dto.getCost()+"",dto.getType(),dto.getDesc(),dto.getId()+""});
+            db.update("COMMIT", new String[]{});
+            db.close();
+
+            return new AbilityDTO();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB: creating event");
+        }
     }
 
     public int getNextID(){

@@ -32,6 +32,17 @@ public class AbilityController {
         return dao.getTypes();
     }
 
+    @GetMapping(value = "/ability/all", produces = "application/json")
+    public List<AbilityDTO> getAll(){
+        return dao.getAll();
+    }
+
+    @PostMapping(value = "/ability/edit", consumes = "application/json", produces = "application/json")
+    public AbilityDTO editEvent(@RequestBody AbilityDTO dto) {
+        return dao.updateAbility(dto);
+    }
+
+
     @GetMapping(value = "/ability/allUnCommonAbilities", produces = "application/json")
     public List<AbilityDTO> getAllUncommonAbilities(){
         return dao.getAllUnCommonAbilities();
