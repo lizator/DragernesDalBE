@@ -118,7 +118,7 @@ public class InventoryDAO {
         }
     }
 
-    public String getState(int relationID){
+    public InventoryDTO getState(int relationID){
         try {
             db.connect();
             ResultSet rs = db.query("SELECT * FROM companiondb.inventoryrelation WHERE idinventoryrelation = ?", new String[]{relationID+""});
@@ -126,7 +126,9 @@ public class InventoryDAO {
             String status = rs.getString("Status");
             rs.close();
             db.close();
-            return status;
+            InventoryDTO dto = new InventoryDTO();
+            dto.setItemName(status);
+            return dto;
         } catch (SQLException e) {
             e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB with inventory");
@@ -152,14 +154,16 @@ public class InventoryDAO {
         }
     }
 
-    public boolean denyRelation(int relationid){
+    public InventoryDTO denyRelation(int relationid){
         try {
             db.connect();
             db.update("UPDATE companiondb.character SET " +
                     "Status = 'denied' " +
                     "WHERE idinventoryrelation = ?;", new String[]{relationid+""});
             db.close();
-            return true;
+            InventoryDTO dto = new InventoryDTO();
+            dto.setAmount(1);
+            return dto;
         } catch (SQLException e) {
             e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB with inventory");
@@ -167,7 +171,7 @@ public class InventoryDAO {
         }
     }
 
-    public boolean denyAllRelations(){
+    public InventoryDTO denyAllRelations(){
         try {
             db.connect();
             ResultSet rs = db.query("SELECT * FROM companiondb.inventoryrelation WHERE Status = 'update'", new String[]{});
@@ -178,7 +182,9 @@ public class InventoryDAO {
             }
             rs.close();
             db.close();
-            return true;
+            InventoryDTO dto = new InventoryDTO();
+            dto.setAmount(1);
+            return dto;
         } catch (SQLException e) {
             e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB with inventory");
@@ -186,7 +192,7 @@ public class InventoryDAO {
         }
     }
 
-    public boolean confirmRelation(int characterid){
+    public InventoryDTO confirmRelation(int characterid){
         try {
             db.connect();
 
@@ -207,7 +213,9 @@ public class InventoryDAO {
             rsNew.close();
 
             db.close();
-            return true;
+            InventoryDTO dto = new InventoryDTO();
+            dto.setAmount(1);
+            return dto;
         } catch (SQLException e) {
             e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB with inventory");

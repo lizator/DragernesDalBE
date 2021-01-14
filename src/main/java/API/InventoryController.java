@@ -22,7 +22,7 @@ public class InventoryController {
     }
 
     @GetMapping(value = "/inventory/state/{relationid}", produces = "application/json")
-    public String getState(@PathVariable int relationid){
+    public InventoryDTO getState(@PathVariable int relationid){
         return dao.getState(relationid);
     }
 
@@ -32,17 +32,17 @@ public class InventoryController {
     }
 
     @GetMapping(value = "/inventory/deny/{relationid}", produces = "application/json")
-    public boolean deny(@PathVariable int relationid){
+    public InventoryDTO deny(@PathVariable int relationid){
         return dao.denyRelation(relationid);
     }
 
     @GetMapping(value = "/inventory/denyall", produces = "application/json")
-    public boolean denyAll(){
+    public InventoryDTO denyAll(){
         return dao.denyAllRelations();
     }
 
     @GetMapping(value = "/inventory/confirm/{characterid}", produces = "application/json")
-    public boolean confirm(@PathVariable int characterid){
+    public InventoryDTO confirm(@PathVariable int characterid){
         return dao.confirmRelation(characterid);
     }
 
