@@ -159,7 +159,7 @@ public class InventoryDAO {
             db.connect();
             db.update("delete companiondb.inventoryrelation, companiondb.inventory from companiondb.inventoryrelation " +
                     "inner join companiondb.inventory on companiondb.inventoryrelation.idinventoryrelation = companiondb.inventory.idinventoryrelation" +
-                    " where idcharacter = ? and Status = 'denied';", new String[]{characterid+""});
+                    " where idcharacter = ? and Status = 'update';", new String[]{characterid+""});
             db.close();
             InventoryDTO dto = new InventoryDTO();
             dto.setAmount(1);
