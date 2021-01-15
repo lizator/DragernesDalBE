@@ -157,9 +157,9 @@ public class InventoryDAO {
     public InventoryDTO denyCharacter(int characterid){
         try {
             db.connect();
-            db.update("UPDATE companiondb.inventoryrelation SET " +
-                    "Status = 'denied' " +
-                    "WHERE idcharacter = ? AND Status = 'update';", new String[]{characterid+""});
+            db.update("delete companiondb.inventoryrelation, companiondb.inventory from companiondb.inventoryrelation " +
+                    "inner join companiondb.inventory on companiondb.inventoryrelation.idinventoryrelation = companiondb.inventory.idinventoryrelation" +
+                    " where idcharacter = ? and Status = 'update';", new String[]{characterid+""});
             db.close();
             InventoryDTO dto = new InventoryDTO();
             dto.setAmount(1);
@@ -174,13 +174,9 @@ public class InventoryDAO {
     public InventoryDTO denyAllRelations(){
         try {
             db.connect();
-            ResultSet rs = db.query("SELECT * FROM companiondb.inventoryrelation WHERE Status = 'update'", new String[]{});
-            while (rs.next()){
-                db.update("UPDATE companiondb.inventoryrelation SET " +
-                        "Status = 'denied' " +
-                        "WHERE idinventoryrelation = ?;", new String[]{rs.getInt("idinventoryrelation")+""});
-            }
-            rs.close();
+            db.update("delete companiondb.inventoryrelation, companiondb.inventory from companiondb.inventoryrelation " +
+                    "inner join companiondb.inventory on companiondb.inventoryrelation.idinventoryrelation = companiondb.inventory.idinventoryrelation" +
+                    " and Status = 'update';", new String[]{});
             db.close();
             InventoryDTO dto = new InventoryDTO();
             dto.setAmount(1);
