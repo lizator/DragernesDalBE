@@ -46,11 +46,11 @@ public class ProfileDAO {
 
             db.update("UPDATE companiondb.user SET " +
                             "firstName = ?, " +
-                            "LastName = ?, " +
-                            "Email = ?, " +
-                            "phone = ? "+
-                            "passHash = ? "+
-                            "salt = ? "+
+                            "secondName = ?, " +
+                            "email = ?, " +
+                            "phone = ?, "+
+                            "passHash = ?, "+
+                            "salt = ?, "+
                             "admin = ? "+
                             "WHERE idUser = ?;",
                     new String[] {dto.getFirstName(), dto.getLastName(), dto.getEmail(), dto.getPhone()+"", dto.getPassHash(), dto.getSalt(), admin+"", dto.getId()+""});
