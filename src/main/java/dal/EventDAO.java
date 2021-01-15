@@ -18,7 +18,7 @@ public class EventDAO {
     public List<EventDTO> getAllEvents() {
         try {
             db.connect();
-            ResultSet rs = db.query("SELECT * FROM companiondb.events", new String[] {});
+            ResultSet rs = db.query("SELECT * FROM companiondb.events where startDate >= now();", new String[] {});
             List<EventDTO> eventList = new ArrayList<>();
             while (rs.next()) {
                 EventDTO eventDTO = new EventDTO();
