@@ -31,6 +31,40 @@ public class ProfileDAO {
 
     }
 
+    public ProfileDTO updateUser(ProfileDTO dto){
+        try {
+            db.connect();
+            ResultSet rs = db.query("SELECT COUNT(*) as count FROM companiondb.user WHERE email = ? AND idUser != ?", new String[] {dto.getEmail(), dto.getId()+""});
+            rs.next();
+            int count = rs.getInt("count");
+            rs.close();
+            if (count != 0) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Email ekstisterer allerede for en anden bruger");
+            }
+            db.update("UPDATE companiondb.user SET " +
+                            "firstName = ?, " +
+                            "LastName = ?, " +
+                            "Email = ?, " +
+                            "phone = ? "+
+                            "admin = ? "+
+                            "WHERE idUser = ?;",
+                    new String[] {dto.getFirstName(),dto.getLastName(),dto.getEmail(),dto.getPhone()+"",dto.getLastName()+"", dto.getId()+""});
+            ResultSet rs2 = db.query("SELECT * FROM user WHERE email = ?", new String[] {dto.getEmail()});
+            rs2.next();
+            ProfileDTO user = new ProfileDTO();
+            setUser(rs2, user);
+            rs2.close();
+            db.close();
+            return user;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Error in DB");
+            //throw new SQLException("Error in Database");
+        }
+
+    }
+
     public boolean getEmailExists(String email){ //Returns true if email already exists in system
         try {
             db.connect();

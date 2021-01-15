@@ -21,6 +21,11 @@ public class ProfileController { //TODO implement sessions
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email not found");
     }
 
+    @PostMapping(value = "/user/update", consumes = "application/json", produces = "application/json")
+    public ProfileDTO updateUser(@RequestBody ProfileDTO dto) throws ResponseStatusException {
+        return dao.updateUser(dto);
+    }
+
     @PostMapping(value = "/user/login", consumes = "application/json", produces = "application/json")
     public ProfileDTO login(@RequestBody ProfileDTO dto) throws ResponseStatusException {
         if (dao.getEmailExists(dto.getEmail())) {
