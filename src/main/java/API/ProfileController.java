@@ -59,5 +59,13 @@ public class ProfileController { //TODO implement sessions
         throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Email already exists");
     }
 
+    @PostMapping(value = "/user/updatePass", consumes = "application/json", produces = "application/json")
+    public ProfileDTO updatePass(@RequestBody ProfileDTO dto) throws ResponseStatusException {
+            ArrayList<String> passList = passHandler.encryptPassword(dto.getPassHash());
+            dto.setPassHash(passList.get(0));
+            dto.setSalt(passList.get(1));
+            return dao.updateUser(dto);
+    }
+
 
 }

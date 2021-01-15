@@ -41,14 +41,19 @@ public class ProfileDAO {
             if (count != 0) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Email ekstisterer allerede for en anden bruger");
             }
+            int admin = 0;
+            if (dto.isAdmin()) admin = 1;
+
             db.update("UPDATE companiondb.user SET " +
                             "firstName = ?, " +
                             "LastName = ?, " +
                             "Email = ?, " +
                             "phone = ? "+
+                            "passHash = ? "+
+                            "salt = ? "+
                             "admin = ? "+
                             "WHERE idUser = ?;",
-                    new String[] {dto.getFirstName(),dto.getLastName(),dto.getEmail(),dto.getPhone()+"",dto.getLastName()+"", dto.getId()+""});
+                    new String[] {dto.getFirstName(), dto.getLastName(), dto.getEmail(), dto.getPhone()+"", dto.getPassHash(), dto.getSalt(), admin+"", dto.getId()+""});
             ResultSet rs2 = db.query("SELECT * FROM user WHERE email = ?", new String[] {dto.getEmail()});
             rs2.next();
             ProfileDTO user = new ProfileDTO();
