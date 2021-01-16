@@ -157,6 +157,7 @@ public class InventoryDAO {
     public InventoryDTO denyCharacter(int characterid){
         try {
             db.connect();
+            //Really nice sql!
             db.update("delete companiondb.inventoryrelation, companiondb.inventory from companiondb.inventoryrelation " +
                     "inner join companiondb.inventory on companiondb.inventoryrelation.idinventoryrelation = companiondb.inventory.idinventoryrelation" +
                     " where idcharacter = ? and Status = 'update';", new String[]{characterid+""});
