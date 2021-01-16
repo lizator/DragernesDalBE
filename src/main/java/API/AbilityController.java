@@ -42,6 +42,12 @@ public class AbilityController {
         return dao.updateAbility(dto);
     }
 
+    @PostMapping(value = "/ability/set/{characterid}", consumes = "application/json", produces = "application/json")
+    public List<AbilityDTO> setAbilities(@PathVariable int characterid, @RequestBody ArrayList<AbilityDTO> abilties) {
+        return dao.setAbilities(characterid, abilties);
+    }
+
+
 
     @GetMapping(value = "/ability/allUnCommonAbilities", produces = "application/json")
     public List<AbilityDTO> getAllUncommonAbilities(){
