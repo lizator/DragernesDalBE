@@ -1,16 +1,12 @@
 package API;
 
 import dal.*;
-import dal.dto.CharacterDTO;
-import dal.dto.MagicSchoolDTO;
-import dal.dto.MagicTierDTO;
-import dal.dto.SpellDTO;
+import dal.dto.*;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -57,6 +53,11 @@ public class MagicController {
     @GetMapping(value = "/magic/getfree/{characterid}/{tierid}", produces = "application/json")
     public MagicTierDTO getFreeTier(@PathVariable int characterid, @PathVariable int tierid){
         return tierDAO.insertTierBought(characterid, tierid);
+    }
+
+    @PostMapping(value = "/magic/set/{characterid}", consumes = "application/json", produces = "application/json")
+    public List<MagicTierDTO> setCharacterMagic(@PathVariable int characterid, @RequestBody ArrayList<MagicTierDTO> tierList){
+        return tierDAO.setCharacterMagic(characterid, tierList);
     }
 
 

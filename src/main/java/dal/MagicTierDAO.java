@@ -1,5 +1,6 @@
 package dal;
 
+import dal.dto.AbilityDTO;
 import dal.dto.MagicTierDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
@@ -73,6 +74,24 @@ public class MagicTierDAO {
             e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB with spells");
             //throw new SQLException("Error in Database");
+        }
+    }
+
+    public List<MagicTierDTO> setCharacterMagic(int characterid, ArrayList<MagicTierDTO> tierList){
+        try {
+            db.connect();
+            db.update("START TRANSACTION;",new String[]{});
+            db.update("DELETE FROM companiondb.ownedspelltiers WHERE idcharacter = ?", new String[]{characterid+""});
+            for (MagicTierDTO dto : tierList){
+                db.update("INSERT INTO companiondb.ownedspelltiers (idcharacter, idspelltier) VALUES (?,?)",
+                        new String[]{characterid+"",dto.getID()+""});
+            }
+            db.update("COMMIT", new String[]{});
+            db.close();
+            return getTiersByCharID(characterid);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB: creating event");
         }
     }
 
