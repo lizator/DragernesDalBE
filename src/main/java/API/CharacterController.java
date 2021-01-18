@@ -2,6 +2,7 @@ package API;
 
 import dal.CharacterDAO;
 import dal.dto.CharacterDTO;
+import dal.dto.RaceDTO;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -35,6 +36,16 @@ public class CharacterController {
     @GetMapping(value = "/character/krys/{characterid}/{race1id}/{race2id}", produces = "application/json")
     public CharacterDTO insertKrysling(@PathVariable int characterid, @PathVariable int race1id, @PathVariable int race2id){
         return dao.insertKrysling(characterid, race1id, race2id);
+    }
+
+    @GetMapping(value = "/character/updatekrys/{characterid}/{race1id}/{race2id}", produces = "application/json")
+    public List<RaceDTO> updateKrysling(@PathVariable int characterid, @PathVariable int race1id, @PathVariable int race2id){
+        return dao.updatgeKrysling(characterid, race1id, race2id);
+    }
+
+    @GetMapping(value = "/character/deletekrys/{characterid}", produces = "application/json")
+    public CharacterDTO deleteKrysling(@PathVariable int characterid){
+        return dao.deleteKrysling(characterid);
     }
 
     @PostMapping(value = "/character/update", consumes = "application/json", produces = "application/json")

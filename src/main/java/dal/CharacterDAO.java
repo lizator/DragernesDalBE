@@ -1,6 +1,7 @@
 package dal;
 
 import dal.dto.CharacterDTO;
+import dal.dto.RaceDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -65,6 +66,36 @@ public class CharacterDAO {
             db.connect();
             db.update("INSERT INTO companiondb.krysling (idcharacter, race1, race2) " +
                     "VALUES (?, ?, ?)", new String[] {characterid+"", race1id+"", race2id+""});
+            db.close();
+            return getCharacterByID(characterid);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB with character");
+            //throw new SQLException("Error in Database");
+        }
+    }
+
+    public List<RaceDTO> updatgeKrysling(int characterid, int race1id, int race2id){
+        try {
+            db.connect();
+            db.update("UPDATE companiondb.krysling SET race1 = ?, race2 = ? WHERE idcharacter = ?",
+                    new String[] { race1id+"", race2id+"", characterid+""});
+            db.close();
+            RaceDAO raceDAO = new RaceDAO();
+            return raceDAO.getCharacterRaces(characterid);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB with character");
+            //throw new SQLException("Error in Database");
+        }
+    }
+
+    public CharacterDTO deleteKrysling(int characterid){
+        try {
+            db.connect();
+            db.update("DELETE FROM companiondb.krysling WHERE idcharacter = ?", new String[] {characterid+""});
             db.close();
             return getCharacterByID(characterid);
 
