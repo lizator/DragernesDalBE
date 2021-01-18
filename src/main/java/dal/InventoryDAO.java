@@ -194,12 +194,15 @@ public class InventoryDAO {
             db.connect();
 
             ResultSet rsOld = db.query("SELECT * FROM companiondb.inventoryrelation WHERE idcharacter = ? AND Status = 'current'", new String[]{characterid+""});
-            rsOld.next();
-            int oldID = rsOld.getInt("idinventoryrelation");
-            db.update("UPDATE companiondb.inventoryrelation SET " +
-                    "Status = 'old' " +
-                    "WHERE idinventoryrelation = ?;", new String[]{oldID+""});
-            rsOld.close();
+            int oldID = -1;
+            if(rsOld.next()!=false){
+                oldID = rsOld.getInt("idinventoryrelation");
+                db.update("UPDATE companiondb.inventoryrelation SET " +
+                        "Status = 'old' " +
+                        "WHERE idinventoryrelation = ?;", new String[]{oldID+""});
+                rsOld.close();
+            }
+
 
             ResultSet rsNew = db.query("SELECT * FROM companiondb.inventoryrelation WHERE idcharacter = ? AND Status = 'update'", new String[]{characterid+""});
             rsNew.next();

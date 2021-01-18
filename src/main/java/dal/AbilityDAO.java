@@ -220,6 +220,24 @@ public class AbilityDAO {
         }
     }
 
+    public List<AbilityDTO> setAbilities(int characterid, ArrayList<AbilityDTO> abilities) {
+        try {
+            db.connect();
+            db.update("START TRANSACTION;",new String[]{});
+            db.update("DELETE FROM companiondb.ownedabilities WHERE idcharacter = ?", new String[]{characterid+""});
+            for (AbilityDTO dto : abilities){
+                db.update("INSERT INTO companiondb.ownedabilities (idcharacter, idability) VALUES (?,?)",
+                        new String[]{characterid+"",dto.getId()+""});
+            }
+            db.update("COMMIT", new String[]{});
+            db.close();
+            return getAbilitiesByCharacterID(characterid);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB: creating event");
+        }
+    }
+
     public int getNextID(){
         try {
             db.connect();

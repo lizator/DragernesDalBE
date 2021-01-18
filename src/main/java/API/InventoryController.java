@@ -31,9 +31,9 @@ public class InventoryController {
         return dao.saveInventoryForUpdate(characterid, inventory);
     }
 
-    @GetMapping(value = "/inventory/deny/{characterid}", produces = "application/json")
-    public InventoryDTO deny(@PathVariable int characterid){
-        return dao.denyCharacter(characterid);
+    @GetMapping(value = "/inventory/deny/{relationid}", produces = "application/json")
+    public InventoryDTO deny(@PathVariable int relationid){
+        return dao.denyCharacter(relationid);
     }
 
     @GetMapping(value = "/inventory/denyall", produces = "application/json")
