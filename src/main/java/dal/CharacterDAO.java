@@ -178,6 +178,22 @@ public class CharacterDAO {
         }
     }
 
+    public CharacterDTO deleteCharacter(int characterid){
+        try {
+            db.connect();
+            db.update("DELETE FROM companiondb.character WHERE idcharacter = ?",new String[] {characterid+""});
+            db.close();
+            CharacterDTO character = new CharacterDTO();
+            character.setIdcharacter(1);
+            return character;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB: deleting character");
+            //throw new SQLException("Error in Database");
+        }
+    }
+
 
     private void setCharacter(ResultSet rs, CharacterDTO character) throws SQLException {
         character.setIduser(rs.getInt("iduser"));

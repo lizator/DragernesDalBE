@@ -52,4 +52,9 @@ public class CharacterController {
     public CharacterDTO updateCharacter(@RequestBody CharacterDTO dto){
         return dao.updateCharacter(dto);
     }
+
+    @GetMapping(value = "/character/delete/{characterid}", produces = "application/json")
+    public CharacterDTO deleteCharacter(@PathVariable int characterid){
+        return dao.deleteCharacter(characterid);
+    }
 }
