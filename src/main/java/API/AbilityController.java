@@ -1,8 +1,10 @@
 package API;
 
 import dal.AbilityDAO;
+import dal.BuyDAO;
 import dal.CharacterDAO;
 import dal.dto.AbilityDTO;
+import dal.dto.BuyDTO;
 import dal.dto.CharacterDTO;
 import dal.dto.EventDTO;
 import org.springframework.http.HttpStatus;
@@ -15,6 +17,7 @@ import java.util.List;
 @RestController
 public class AbilityController {
     AbilityDAO dao = new AbilityDAO();
+    BuyDAO buyDAO = new BuyDAO();
     CharacterDAO characterDAO = new CharacterDAO();
 
     @GetMapping(value = "/ability/byCharacterID/{characterid}", produces = "application/json")
@@ -69,7 +72,12 @@ public class AbilityController {
         return dao.getAbilityByID(abilityID);
     }
 
-    @GetMapping(value = "/ability/buy/{characterID}/{abilityID}", produces = "application/json")
+    @PostMapping(value = "/ability/buydto", consumes = "application/json", produces = "application/json")
+    public BuyDTO buyBuyDTO(@RequestBody BuyDTO dto) {
+        return buyDAO.buyAbility(dto);
+    }
+
+    @GetMapping(value = "/ability/buy/{characterID}/{abilityID}", produces = "application/json") //Old and replaced. updates character in app
     public AbilityDTO buyAbility(@PathVariable int characterID, @PathVariable int abilityID){
 
         CharacterDTO characterDTO = characterDAO.getCharacterByID(characterID); //getting character
