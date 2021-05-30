@@ -17,7 +17,7 @@ public class RaceDAO {
     public List<RaceDTO> getRacesStandart() {
         try {
             db.connect();
-            ResultSet rs = db.query("SELECT * FROM companiondb.races WHERE idrace < 12", new String[]{});
+            ResultSet rs = db.query("SELECT * FROM companiondb.races WHERE idrace < 11", new String[]{});
             List<RaceDTO> raceList = new ArrayList<>();
             while (rs.next()) {
                 RaceDTO race = new RaceDTO();
