@@ -10,14 +10,22 @@ import java.sql.SQLException;
 public class BuyDAO {
     private final SQLDatabaseIO db = new SQLDatabaseIO("kamel", "dreng", "runerne.dk", 8003);
     CharacterDAO characterDAO = new CharacterDAO();
+    AbilityDAO abilityDAO = new AbilityDAO();
 
     public BuyDTO buyAbility(BuyDTO buyDto){
         try {
-            db.connect();
             String cmd = "";
             for(AbilityDTO ability : buyDto.getAbilityBuyList()) {
+                if (abilityDAO.getAbilityExist(ability.getId())) {
+                    if (ability.getId() == -3) { //generates new works and updates id
+                        AbilityDTO work = abilityDAO.addCraft(ability.getName());
+                        ability.setId(work.getId());
+                    }
+                }
                 cmd += "INSERT INTO companiondb.ownedabilities (idcharacter, idability) VALUES (" + buyDto.getCharacter().getIdcharacter() + "," + ability.getId() + "); ";
+
             }
+            db.connect();
             db.update(cmd, new String[]{});
             db.close();
             return new BuyDTO(characterDAO.updateCharacter(buyDto.getCharacter()), buyDto.getAbilityBuyList());

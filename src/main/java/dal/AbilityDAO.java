@@ -132,6 +132,26 @@ public class AbilityDAO {
         }
     }
 
+    public boolean getAbilityExist(int abilityID){
+        try {
+            db.connect();
+            ResultSet rs = db.query("SELECT count(*) AS exist FROM companiondb.abilities WHERE idability = ? ", new String[] {abilityID+""});
+            rs.next();
+            int exist = rs.getInt("exist");
+            rs.close();
+            db.close();
+            if (exist == 0){
+                return false;
+            }
+            return true;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB with character");
+            //throw new SQLException("Error in Database");
+        }
+    }
+
     public AbilityDTO buyAbility(int characterID, int abilityID){
         try {
             db.connect();
