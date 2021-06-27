@@ -77,6 +77,17 @@ public class AbilityController {
         return buyDAO.buyAbility(dto);
     }
 
+    @GetMapping(value = "/ability/buydto", produces = "application/json")
+    public BuyDTO testBuyDTO() {
+        AbilityDAO abilityDAO = new AbilityDAO();
+        CharacterDTO character = characterDAO.getCharacterByID(1);
+        ArrayList<AbilityDTO> arrayList = new ArrayList<AbilityDTO>();
+        arrayList.add(abilityDAO.getAbilityByID(65));
+        arrayList.add(abilityDAO.getAbilityByID(66));
+        BuyDTO dto = new BuyDTO(character, arrayList);
+        return dto;
+    }
+
     @GetMapping(value = "/ability/buy/{characterID}/{abilityID}", produces = "application/json") //Old and replaced. updates character in app
     public AbilityDTO buyAbility(@PathVariable int characterID, @PathVariable int abilityID){
 
