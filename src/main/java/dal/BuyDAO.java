@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class BuyDAO {
     private final SQLDatabaseIO db = new SQLDatabaseIO("kamel", "dreng", "runerne.dk", 8003);
@@ -14,19 +15,20 @@ public class BuyDAO {
 
     public BuyDTO buyAbility(BuyDTO buyDto){
         try {
-            String cmd = "";
+            ArrayList<String> cmd = new ArrayList<>();
             for(AbilityDTO ability : buyDto.getAbilityBuyList()) {
-                if (abilityDAO.getAbilityExist(ability.getId())) {
+                if (!abilityDAO.getAbilityExist(ability.getId())) {
                     if (ability.getId() == -3) { //generates new works and updates id
                         AbilityDTO work = abilityDAO.addCraft(ability.getName());
                         ability.setId(work.getId());
                     }
                 }
-                cmd += "INSERT INTO companiondb.ownedabilities (idcharacter, idability) VALUES (" + buyDto.getCharacter().getIdcharacter() + "," + ability.getId() + "); ";
+                cmd.add("INSERT INTO companiondb.ownedabilities (idcharacter, idability) VALUES (" + buyDto.getCharacter().getIdcharacter() + "," + ability.getId() + "); ");
 
             }
             db.connect();
-            db.update(cmd, new String[]{});
+            for (String c : cmd)
+                db.update(c, new String[]{});
             db.close();
             return new BuyDTO(characterDAO.updateCharacter(buyDto.getCharacter()), buyDto.getAbilityBuyList());
 
