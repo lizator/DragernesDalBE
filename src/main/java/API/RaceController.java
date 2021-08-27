@@ -1,8 +1,6 @@
 package API;
 
 import dal.RaceDAO;
-import dal.dto.CharacterDTO;
-import dal.dto.InventoryDTO;
 import dal.dto.RaceDTO;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,9 +11,15 @@ public class RaceController {
     RaceDAO dao = new RaceDAO();
 
     @GetMapping(value = "/race/info/standart", produces = "application/json")
+    public List<RaceDTO> getRacesStandartDeprecated(){
+        return dao.getRacesStandartDeprecated();
+    }
+
+    @GetMapping(value = "/race/info/standart2", produces = "application/json")
     public List<RaceDTO> getRacesStandart(){
         return dao.getRacesStandart();
     }
+
     @GetMapping(value = "/race/info/custom", produces = "application/json")
     public List<RaceDTO> getRacesCustom(){
         return dao.getCustomRaces();

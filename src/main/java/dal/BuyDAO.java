@@ -23,7 +23,7 @@ public class BuyDAO {
                         ability.setId(work.getId());
                         cmd.add("INSERT INTO companiondb.ownedabilities (idcharacter, idability) VALUES (" + buyDto.getCharacter().getIdcharacter() + "," + ability.getId() + "); ");
                     } else if (ability.getType().equals("Magi")){ //Magic tier disguised as ability (magicTierID == abilityID)
-                        cmd.add("INSERT INTO companiondb.ownedspelltiers (idcharacter, idspelltier) VALUES (" + buyDto.getCharacter().getIdcharacter() + "," + ability.getId() + ");");
+                        cmd.add("INSERT INTO companiondb.ownedspelltiers (idcharacter, idspelltier) VALUES (" + buyDto.getCharacter().getIdcharacter() + "," + ability.getId() + "); ");
                     }
                 }
                 else {

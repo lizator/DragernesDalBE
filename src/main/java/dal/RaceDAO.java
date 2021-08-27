@@ -14,7 +14,28 @@ import java.util.List;
 public class RaceDAO {
     private final SQLDatabaseIO db = new SQLDatabaseIO("kamel", "dreng", "runerne.dk", 8003);
 
-    public List<RaceDTO> getRacesStandart() {
+    public List<RaceDTO> getRacesStandartDeprecated() { //Deprecated, should get < 11. Here for old version of app.
+        try {
+            db.connect();
+            ResultSet rs = db.query("SELECT * FROM companiondb.races WHERE idrace < 10", new String[]{});
+            List<RaceDTO> raceList = new ArrayList<>();
+            while (rs.next()) {
+                RaceDTO race = new RaceDTO();
+                setRace(rs, race);
+                raceList.add(race);
+            }
+            rs.close();
+            db.close();
+            return raceList;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB with Races");
+            //throw new SQLException("Error in Database");
+        }
+    }
+
+    public List<RaceDTO> getRacesStandart() { //Deprecated, should get < 11. Here for old version of app.
         try {
             db.connect();
             ResultSet rs = db.query("SELECT * FROM companiondb.races WHERE idrace < 11", new String[]{});
