@@ -1,5 +1,7 @@
 package dal;
 
+import dal.dto.AbilityDTO;
+import dal.dto.BuyDTO;
 import dal.dto.CharacterDTO;
 import dal.dto.RaceDTO;
 import org.springframework.http.HttpStatus;
@@ -13,6 +15,8 @@ import java.util.List;
 public class CharacterDAO {
     private final SQLDatabaseIO db = new SQLDatabaseIO("kamel", "dreng", "runerne.dk", 8003);
     InventoryDAO inventoryDAO = new InventoryDAO();
+    RaceDAO raceDAO = new RaceDAO();
+    AbilityDAO abilityDAO = new AbilityDAO();
 
     public CharacterDAO(){}
 
@@ -76,7 +80,7 @@ public class CharacterDAO {
         }
     }
 
-    public List<RaceDTO> updatgeKrysling(int characterid, int race1id, int race2id){
+    public List<RaceDTO> updateKrysling(int characterid, int race1id, int race2id){
         try {
             db.connect();
             db.update("UPDATE companiondb.krysling SET race1 = ?, race2 = ? WHERE idcharacter = ?",
@@ -176,6 +180,21 @@ public class CharacterDAO {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB: creating character");
             //throw new SQLException("Error in Database");
         }
+    }
+
+    public BuyDTO createCharacterAndGetAbility(CharacterDTO dto){
+        //Creating Character as normal
+        CharacterDTO characterDTO = createCharacter(dto);
+
+        //Finding starting ability
+        RaceDTO race = raceDAO.getRace(dto.getIdrace());
+        AbilityDTO ability = abilityDAO.getAbilityByID(race.getStart());
+
+        //Adding ability to a BuyDTO for transport
+        BuyDTO buyDTO = new BuyDTO(characterDTO, new ArrayList<AbilityDTO>());
+        buyDTO.getAbilityBuyList().add(ability);
+
+        return buyDTO;
     }
 
     public CharacterDTO deleteCharacter(int characterid){
