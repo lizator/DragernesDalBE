@@ -16,7 +16,7 @@ public class InventoryDAO {
         //return null;
         try {
             db.connect();
-            ResultSet rsStatus = db.query("(SELECT COUNT(*) as count FROM d4t0u63k7aqlao.inventoryrelation WHERE idcharacter = ? AND Status = 'update')", new String[]{characterid+""});
+            ResultSet rsStatus = db.query("(SELECT COUNT(*) as count FROM inventoryrelation WHERE idcharacter = ? AND Status = 'update')", new String[]{characterid+""});
             rsStatus.next();
             int count = rsStatus.getInt("count");
             rsStatus.close();
@@ -24,12 +24,12 @@ public class InventoryDAO {
             if (count == 0) status = "current";
             else status = "update";
 
-            ResultSet rs = db.query("SELECT * FROM d4t0u63k7aqlao.inventoryrelation WHERE idcharacter = ? AND Status = ?", new String[]{characterid+"", status});
+            ResultSet rs = db.query("SELECT * FROM inventoryrelation WHERE idcharacter = ? AND Status = ?", new String[]{characterid+"", status});
             rs.next();
             int idInventoryRelation = rs.getInt("idinventoryrelation");
             rs.close();
 
-            ResultSet rs2 = db.query("SELECT * FROM d4t0u63k7aqlao.inventory WHERE idinventoryrelation = ?", new String[]{idInventoryRelation+""});
+            ResultSet rs2 = db.query("SELECT * FROM inventory WHERE idinventoryrelation = ?", new String[]{idInventoryRelation+""});
             List<InventoryDTO> itemList = new ArrayList<>();
             while (rs2.next()) {
                 InventoryDTO item = new InventoryDTO();
@@ -53,12 +53,12 @@ public class InventoryDAO {
             db.connect();
 
             String status = "current";
-            ResultSet rs = db.query("SELECT * FROM d4t0u63k7aqlao.inventoryrelation WHERE idcharacter = ? AND Status = ?", new String[]{characterid+"", status});
+            ResultSet rs = db.query("SELECT * FROM inventoryrelation WHERE idcharacter = ? AND Status = ?", new String[]{characterid+"", status});
             rs.next();
             int idInventoryRelation = rs.getInt("idinventoryrelation");
             rs.close();
 
-            ResultSet rs2 = db.query("SELECT * FROM d4t0u63k7aqlao.inventory WHERE idinventoryrelation = ?", new String[]{idInventoryRelation+""});
+            ResultSet rs2 = db.query("SELECT * FROM inventory WHERE idinventoryrelation = ?", new String[]{idInventoryRelation+""});
             List<InventoryDTO> itemList = new ArrayList<>();
             while (rs2.next()) {
                 InventoryDTO item = new InventoryDTO();
@@ -81,26 +81,26 @@ public class InventoryDAO {
             int relationID = getNextID();
             List<InventoryDTO> itemList = new ArrayList<>();
             db.connect();
-            ResultSet rsStatus = db.query("(SELECT COUNT(*) as count FROM d4t0u63k7aqlao.inventoryrelation WHERE idcharacter = ? AND Status = 'update')", new String[]{characterid+""});
+            ResultSet rsStatus = db.query("(SELECT COUNT(*) as count FROM inventoryrelation WHERE idcharacter = ? AND Status = 'update')", new String[]{characterid+""});
             rsStatus.next();
             int count = rsStatus.getInt("count");
             if (count == 0) {
-                db.update("INSERT INTO d4t0u63k7aqlao.inventoryrelation (idinventoryrelation, idcharacter) VALUES (?,?)", new String[]{relationID+"", characterid+""});
+                db.update("INSERT INTO inventoryrelation (idinventoryrelation, idcharacter) VALUES (?,?)", new String[]{relationID+"", characterid+""});
             } else {
-                ResultSet rsGetID = db.query("SELECT * FROM d4t0u63k7aqlao.inventoryrelation WHERE idcharacter = ? AND Status = 'update'", new String[]{characterid+""});
+                ResultSet rsGetID = db.query("SELECT * FROM inventoryrelation WHERE idcharacter = ? AND Status = 'update'", new String[]{characterid+""});
                 rsGetID.next();
                 relationID = rsGetID.getInt("idinventoryrelation");
                 rsGetID.close();
 
-                db.update("DELETE FROM d4t0u63k7aqlao.inventory WHERE idinventoryrelation = ?", new String[]{relationID+""});
+                db.update("DELETE FROM inventory WHERE idinventoryrelation = ?", new String[]{relationID+""});
             }
 
             for (InventoryDTO line : inventory){
-                db.update("INSERT INTO d4t0u63k7aqlao.inventory (idinventoryrelation, iditem, itemname, amount) VALUES (?,?,?,?)",
+                db.update("INSERT INTO inventory (idinventoryrelation, iditem, itemname, amount) VALUES (?,?,?,?)",
                         new String[]{relationID+"", line.getIdItem()+"", line.getItemName(), line.getAmount()+""});
             }
 
-            ResultSet rs2 = db.query("SELECT * FROM d4t0u63k7aqlao.inventory WHERE idinventoryrelation = ?", new String[]{relationID+""});
+            ResultSet rs2 = db.query("SELECT * FROM inventory WHERE idinventoryrelation = ?", new String[]{relationID+""});
             while (rs2.next()) {
                 InventoryDTO item = new InventoryDTO();
                 setItem(rs2, item);
@@ -121,7 +121,7 @@ public class InventoryDAO {
     public InventoryDTO getState(int relationID){
         try {
             db.connect();
-            ResultSet rs = db.query("SELECT * FROM d4t0u63k7aqlao.inventoryrelation WHERE idinventoryrelation = ?", new String[]{relationID+""});
+            ResultSet rs = db.query("SELECT * FROM inventoryrelation WHERE idinventoryrelation = ?", new String[]{relationID+""});
             rs.next();
             String status = rs.getString("Status");
             rs.close();
@@ -140,8 +140,8 @@ public class InventoryDAO {
         try {
             int relationid = getNextID();
             db.connect();
-            db.update("INSERT INTO d4t0u63k7aqlao.inventoryrelation (idinventoryrelation, idcharacter, Status) VALUES (?,?,'current')", new String[]{relationid+"", characterid+""});
-            db.update("INSERT INTO d4t0u63k7aqlao.inventory (idinventoryrelation, iditem, itemname, amount) " +
+            db.update("INSERT INTO inventoryrelation (idinventoryrelation, idcharacter, Status) VALUES (?,?,'current')", new String[]{relationid+"", characterid+""});
+            db.update("INSERT INTO inventory (idinventoryrelation, iditem, itemname, amount) " +
                     "VALUES " +
                     "(?, 0, 'Guld', 0), " +
                     "(?, 1, 'Sølv', 0), " +
@@ -158,8 +158,8 @@ public class InventoryDAO {
         try {
             db.connect();
             //Really nice sql!
-            db.update("delete d4t0u63k7aqlao.inventoryrelation, d4t0u63k7aqlao.inventory from d4t0u63k7aqlao.inventoryrelation " +
-                    "inner join d4t0u63k7aqlao.inventory on d4t0u63k7aqlao.inventoryrelation.idinventoryrelation = d4t0u63k7aqlao.inventory.idinventoryrelation" +
+            db.update("delete inventoryrelation, inventory from inventoryrelation " +
+                    "inner join inventory on inventoryrelation.idinventoryrelation = inventory.idinventoryrelation" +
                     " where idcharacter = ? and Status = 'update';", new String[]{characterid+""});
             db.close();
             InventoryDTO dto = new InventoryDTO();
@@ -175,8 +175,8 @@ public class InventoryDAO {
     public InventoryDTO denyAllRelations(){
         try {
             db.connect();
-            db.update("delete d4t0u63k7aqlao.inventoryrelation, d4t0u63k7aqlao.inventory from d4t0u63k7aqlao.inventoryrelation " +
-                    "inner join d4t0u63k7aqlao.inventory on d4t0u63k7aqlao.inventoryrelation.idinventoryrelation = d4t0u63k7aqlao.inventory.idinventoryrelation" +
+            db.update("delete inventoryrelation, inventory from inventoryrelation " +
+                    "inner join inventory on inventoryrelation.idinventoryrelation = inventory.idinventoryrelation" +
                     " and Status = 'update';", new String[]{});
             db.close();
             InventoryDTO dto = new InventoryDTO();
@@ -193,21 +193,21 @@ public class InventoryDAO {
         try {
             db.connect();
 
-            ResultSet rsOld = db.query("SELECT * FROM d4t0u63k7aqlao.inventoryrelation WHERE idcharacter = ? AND Status = 'current'", new String[]{characterid+""});
+            ResultSet rsOld = db.query("SELECT * FROM inventoryrelation WHERE idcharacter = ? AND Status = 'current'", new String[]{characterid+""});
             int oldID = -1;
             if(rsOld.next()!=false){
                 oldID = rsOld.getInt("idinventoryrelation");
-                db.update("UPDATE d4t0u63k7aqlao.inventoryrelation SET " +
+                db.update("UPDATE inventoryrelation SET " +
                         "Status = 'old' " +
                         "WHERE idinventoryrelation = ?;", new String[]{oldID+""});
                 rsOld.close();
             }
 
 
-            ResultSet rsNew = db.query("SELECT * FROM d4t0u63k7aqlao.inventoryrelation WHERE idcharacter = ? AND Status = 'update'", new String[]{characterid+""});
+            ResultSet rsNew = db.query("SELECT * FROM inventoryrelation WHERE idcharacter = ? AND Status = 'update'", new String[]{characterid+""});
             rsNew.next();
             int relationid = rsNew.getInt("idinventoryrelation");
-            db.update("UPDATE d4t0u63k7aqlao.inventoryrelation SET " +
+            db.update("UPDATE inventoryrelation SET " +
                     "Status = 'current' " +
                     "WHERE idinventoryrelation = ?;", new String[]{relationid+""});
             rsNew.close();
@@ -226,7 +226,7 @@ public class InventoryDAO {
     private int getNextID(){
         try {
             db.connect();
-            ResultSet rs = db.query("SELECT MAX(idinventoryrelation) AS max FROM d4t0u63k7aqlao.inventoryrelation;", new String[]{});
+            ResultSet rs = db.query("SELECT MAX(idinventoryrelation) AS max FROM inventoryrelation;", new String[]{});
             rs.next();
             int max = rs.getInt("max");
             rs.close();

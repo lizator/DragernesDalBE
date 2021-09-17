@@ -15,7 +15,7 @@ public class MagicSchoolDAO {
     public List<MagicSchoolDTO> getAllSchools(){
         try {
             db.connect();
-            ResultSet rs = db.query("SELECT * FROM d4t0u63k7aqlao.magicschools", new String[] {});
+            ResultSet rs = db.query("SELECT * FROM magicschools", new String[] {});
             List<MagicSchoolDTO> schoolList = new ArrayList<>();
             while (rs.next()) {
                 MagicSchoolDTO school = new MagicSchoolDTO();
