@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MagicTierDAO {
-    private final SQLDatabaseIO db = new SQLDatabaseIO("kamel", "dreng", "runerne.dk", 8003);
+    private final SQLDatabaseIO db = new SQLDatabaseIO("ybyfqrmupcyoxk", "11e2c72d61349e7579224313c650c39ef21fea976dea1428f0fe38201b624e28", "ec2-52-214-178-113.eu-west-1.compute.amazonaws.com", 5432);
 
     public List<MagicTierDTO> getAllTiers(){
         try {

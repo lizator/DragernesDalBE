@@ -11,7 +11,7 @@ public class SQLDatabaseIO {
     private final String DatabaseURL;
     private final String USER;
     private final String PASS;
-    private String db_name = "companiondb";
+    private String db_name = "d4t0u63k7aqlao";
     private boolean connected = false;
     private Connection conn = null;
     private Statement stmt = null;
