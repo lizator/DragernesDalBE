@@ -17,7 +17,7 @@ public class AttendingDAO {
     public List<AttendingDTO> getAllAttending(int charID) {
         try {
             db.connect();
-            ResultSet rs = db.query("SELECT * FROM companiondb.eventAttendancyList WHERE idcharacter = ?", new String[] {charID+""});
+            ResultSet rs = db.query("SELECT * FROM d4t0u63k7aqlao.eventAttendancyList WHERE idcharacter = ?", new String[] {charID+""});
             List<AttendingDTO> attendingList = new ArrayList<>();
             while (rs.next()) {
                 AttendingDTO attendingDTO = new AttendingDTO();
@@ -44,7 +44,7 @@ public class AttendingDAO {
         try {
             db.connect();
             db.update("START TRANSACTION;",new String[]{});
-            db.update("INSERT INTO companiondb.eventAttendancyList (idcharacter, idevent) VALUES (?,?)", new String[] {dto.getIdChar()+"",dto.getIdEvent()+""});
+            db.update("INSERT INTO d4t0u63k7aqlao.eventAttendancyList (idcharacter, idevent) VALUES (?,?)", new String[] {dto.getIdChar()+"",dto.getIdEvent()+""});
             db.update("COMMIT", new String[]{});
             db.close();
 
@@ -61,7 +61,7 @@ public class AttendingDAO {
         try {
             db.connect();
             db.update("START TRANSACTION;",new String[]{});
-            db.update("DELETE FROM companiondb.eventAttendancyList WHERE (idcharacter = ?) and (idevent = ?);", new String[] {dto.getIdChar()+"",dto.getIdEvent()+""});
+            db.update("DELETE FROM d4t0u63k7aqlao.eventAttendancyList WHERE (idcharacter = ?) and (idevent = ?);", new String[] {dto.getIdChar()+"",dto.getIdEvent()+""});
             db.update("COMMIT", new String[]{});
             db.close();
 

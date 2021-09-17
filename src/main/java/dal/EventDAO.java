@@ -18,7 +18,7 @@ public class EventDAO {
     public List<EventDTO> getAllEvents() {
         try {
             db.connect();
-            ResultSet rs = db.query("SELECT * FROM companiondb.events where startDate >= now();", new String[] {});
+            ResultSet rs = db.query("SELECT * FROM d4t0u63k7aqlao.events where startDate >= now();", new String[] {});
             List<EventDTO> eventList = new ArrayList<>();
             while (rs.next()) {
                 EventDTO eventDTO = new EventDTO();
@@ -50,7 +50,7 @@ public class EventDAO {
         try {
             db.connect();
             db.update("START TRANSACTION;",new String[]{});
-            db.update("INSERT INTO companiondb.events (name, startDate, endDate, address, info, hyperlink) VALUES (?,?,?,?,?, ?)",
+            db.update("INSERT INTO d4t0u63k7aqlao.events (name, startDate, endDate, address, info, hyperlink) VALUES (?,?,?,?,?, ?)",
                     new String[] {dto.getName()+"",dto.getStartDate()+"",dto.getEndDate()+"",dto.getAddress()+"",dto.getInfo()+"",dto.getHyperlink()+""});
             db.update("COMMIT", new String[]{});
             db.close();
@@ -67,7 +67,7 @@ public class EventDAO {
     public EventDTO editEvent(EventDTO dto) {
         try {
             db.connect();
-            db.update("UPDATE companiondb.events SET " +
+            db.update("UPDATE d4t0u63k7aqlao.events SET " +
                     "name = ?, " +
                     "startDate = ?, " +
                     "endDate = ?, " +

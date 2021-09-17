@@ -34,7 +34,7 @@ public class ProfileDAO {
     public ProfileDTO updateUser(ProfileDTO dto){
         try {
             db.connect();
-            ResultSet rs = db.query("SELECT COUNT(*) as count FROM companiondb.user WHERE email = ? AND idUser != ?", new String[] {dto.getEmail(), dto.getId()+""});
+            ResultSet rs = db.query("SELECT COUNT(*) as count FROM d4t0u63k7aqlao.user WHERE email = ? AND idUser != ?", new String[] {dto.getEmail(), dto.getId()+""});
             rs.next();
             int count = rs.getInt("count");
             rs.close();
@@ -44,7 +44,7 @@ public class ProfileDAO {
             int admin = 0;
             if (dto.isAdmin()) admin = 1;
 
-            db.update("UPDATE companiondb.user SET " +
+            db.update("UPDATE d4t0u63k7aqlao.user SET " +
                             "firstName = ?, " +
                             "secondName = ?, " +
                             "email = ?, " +

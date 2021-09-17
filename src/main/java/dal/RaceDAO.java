@@ -17,7 +17,7 @@ public class RaceDAO {
     public List<RaceDTO> getRacesStandartDeprecated() { //Deprecated, should get < 11. Here for old version of app.
         try {
             db.connect();
-            ResultSet rs = db.query("SELECT * FROM companiondb.races WHERE idrace < 10", new String[]{});
+            ResultSet rs = db.query("SELECT * FROM d4t0u63k7aqlao.races WHERE idrace < 10", new String[]{});
             List<RaceDTO> raceList = new ArrayList<>();
             while (rs.next()) {
                 RaceDTO race = new RaceDTO();
@@ -38,7 +38,7 @@ public class RaceDAO {
     public List<RaceDTO> getRacesStandart() { //Deprecated, should get < 11. Here for old version of app.
         try {
             db.connect();
-            ResultSet rs = db.query("SELECT * FROM companiondb.races WHERE idrace < 11", new String[]{});
+            ResultSet rs = db.query("SELECT * FROM d4t0u63k7aqlao.races WHERE idrace < 11", new String[]{});
             List<RaceDTO> raceList = new ArrayList<>();
             while (rs.next()) {
                 RaceDTO race = new RaceDTO();
@@ -59,7 +59,7 @@ public class RaceDAO {
     public List<RaceDTO> getCustomRaces() {
         try {
             db.connect();
-            ResultSet rs = db.query("SELECT * FROM companiondb.races WHERE idrace > 10", new String[]{});
+            ResultSet rs = db.query("SELECT * FROM d4t0u63k7aqlao.races WHERE idrace > 10", new String[]{});
             List<RaceDTO> raceList = new ArrayList<>();
             while (rs.next()) {
                 RaceDTO race = new RaceDTO();
@@ -81,7 +81,7 @@ public class RaceDAO {
         try {
             db.connect();
             db.update("START TRANSACTION;", new String[]{});
-            db.update("UPDATE companiondb.races SET " +
+            db.update("UPDATE d4t0u63k7aqlao.races SET " +
                     "racename = ?, " +
                     "start = ?, " +
                     "2ep = ?, " +
@@ -109,7 +109,7 @@ public class RaceDAO {
         try {
             db.connect();
             db.update("START TRANSACTION;", new String[]{});
-            db.update("INSERT INTO companiondb.races (racename, start, 2ep, 3ep, 4ep)" +
+            db.update("INSERT INTO d4t0u63k7aqlao.races (racename, start, 2ep, 3ep, 4ep)" +
                     " VALUES (?,?,?,?,?)", new String[]{dto.getRacename() + "", dto.getStart() + "", dto.getEp2() + "", dto.getEp3() + "", dto.getEp4() + ""});
             db.update("COMMIT;", new String[]{});
             db.close();
@@ -125,7 +125,7 @@ public class RaceDAO {
     public RaceDTO getRace(int raceID) {
         try {
             db.connect();
-            ResultSet rs = db.query("SELECT * FROM companiondb.races WHERE idrace = ?", new String[]{raceID + ""});
+            ResultSet rs = db.query("SELECT * FROM d4t0u63k7aqlao.races WHERE idrace = ?", new String[]{raceID + ""});
             RaceDTO race = new RaceDTO();
             rs.next();
             setRace(rs, race);
@@ -143,10 +143,10 @@ public class RaceDAO {
     public List<RaceDTO> getCharacterRaces(int characterID) {
         try {
             db.connect();
-            ResultSet rs0 = db.query("SELECT COUNT(*) AS count FROM companiondb.krysling WHERE idcharacter = ?", new String[]{characterID + ""});
+            ResultSet rs0 = db.query("SELECT COUNT(*) AS count FROM d4t0u63k7aqlao.krysling WHERE idcharacter = ?", new String[]{characterID + ""});
             rs0.next();
             if (rs0.getInt("count") == 1) {
-                ResultSet rs = db.query("SELECT * FROM companiondb.krysling WHERE idcharacter = ?", new String[]{characterID + ""});
+                ResultSet rs = db.query("SELECT * FROM d4t0u63k7aqlao.krysling WHERE idcharacter = ?", new String[]{characterID + ""});
                 List<RaceDTO> raceList = new ArrayList<>();
                 rs.next();
                 int race1ID = rs.getInt("race1");

@@ -15,7 +15,7 @@ public class SpellDAO {
     public List<SpellDTO> getAllSpells(){
         try {
             db.connect();
-            ResultSet rs = db.query("SELECT * FROM companiondb.spells", new String[] {});
+            ResultSet rs = db.query("SELECT * FROM d4t0u63k7aqlao.spells", new String[] {});
             List<SpellDTO> spellList = new ArrayList<>();
             while (rs.next()) {
                 SpellDTO spell = new SpellDTO();

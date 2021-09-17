@@ -13,7 +13,7 @@ public class MainDAO {
     public MainDTO getLastTimeTableModified(String tableName){
         try {
             db.connect();
-            ResultSet rs = db.query("SHOW TABLE STATUS FROM companiondb LIKE ?",new String[]{tableName});
+            ResultSet rs = db.query("SHOW TABLE STATUS FROM d4t0u63k7aqlao LIKE ?",new String[]{tableName});
             rs.next();
             String update = rs.getString("Update_time");
             if (update == null) update = rs.getString("Create_time");

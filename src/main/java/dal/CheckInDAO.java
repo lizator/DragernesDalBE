@@ -17,7 +17,7 @@ public class CheckInDAO {
         try {
             db.connect();
             db.update("START TRANSACTION;",new String[]{});
-            db.update("UPDATE companiondb.eventAttendancyList SET checkIn = ? WHERE idcharacter = ? AND idevent = ?", new String[] {checkInDTO.getCheckin()+"", checkInDTO.getIdChar()+"",checkInDTO.getIdEvent()+""});
+            db.update("UPDATE d4t0u63k7aqlao.eventAttendancyList SET checkIn = ? WHERE idcharacter = ? AND idevent = ?", new String[] {checkInDTO.getCheckin()+"", checkInDTO.getIdChar()+"",checkInDTO.getIdEvent()+""});
             db.update("COMMIT", new String[]{});
             db.close();
 
@@ -33,7 +33,7 @@ public class CheckInDAO {
         try {
             db.connect();
             db.update("START TRANSACTION;",new String[]{});
-            db.update("update companiondb.character as t1, companiondb.eventAttendancyList as t2 SET t1.currentep = currentep +1 WHERE t1.idcharacter = t2.idcharacter and t2.checkIn = true and t2.idevent = ?;",
+            db.update("update d4t0u63k7aqlao.character as t1, d4t0u63k7aqlao.eventAttendancyList as t2 SET t1.currentep = currentep +1 WHERE t1.idcharacter = t2.idcharacter and t2.checkIn = true and t2.idevent = ?;",
                     new String[] {dto.getIdEvent()+""});
             db.update("COMMIT", new String[]{});
             db.close();
