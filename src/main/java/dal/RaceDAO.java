@@ -84,9 +84,9 @@ public class RaceDAO {
             db.update("UPDATE races SET " +
                     "racename = ?, " +
                     "start = ?, " +
-                    "2ep = ?, " +
-                    "3ep = ?, " +
-                    "4ep = ?" +
+                    "twoep = ?, " +
+                    "threeep = ?, " +
+                    "fourep = ?" +
                     "WHERE idrace = ?;", new String[]{
                     dto.getRacename() + "",
                     dto.getStart() + "",
@@ -109,7 +109,7 @@ public class RaceDAO {
         try {
             db.connect();
             db.update("START TRANSACTION;", new String[]{});
-            db.update("INSERT INTO races (racename, start, 2ep, 3ep, 4ep)" +
+            db.update("INSERT INTO races (racename, start, twoep, threeep, fourep)" +
                     " VALUES (?,?,?,?,?)", new String[]{dto.getRacename() + "", dto.getStart() + "", dto.getEp2() + "", dto.getEp3() + "", dto.getEp4() + ""});
             db.update("COMMIT;", new String[]{});
             db.close();
@@ -171,8 +171,8 @@ public class RaceDAO {
         race.setID(rs.getInt("idrace"));
         race.setRacename(rs.getString("racename"));
         race.setStart(rs.getInt("start"));
-        race.setEp2(rs.getInt("2ep"));
-        race.setEp3(rs.getInt("3ep"));
-        race.setEp4(rs.getInt("4ep"));
+        race.setEp2(rs.getInt("twoep"));
+        race.setEp3(rs.getInt("threeep"));
+        race.setEp4(rs.getInt("fourep"));
     }
 }

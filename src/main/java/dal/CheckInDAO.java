@@ -15,9 +15,11 @@ public class CheckInDAO {
 
     public CheckInDTO setCharacterByEventID(CheckInDTO checkInDTO){
         try {
+            String checkin = "false";
+            if (checkInDTO.getCheckin() == 1) checkin = "true";
             db.connect();
             db.update("START TRANSACTION;",new String[]{});
-            db.update("UPDATE eventAttendancyList SET checkIn = ? WHERE idcharacter = ? AND idevent = ?", new String[] {checkInDTO.getCheckin()+"", checkInDTO.getIdChar()+"",checkInDTO.getIdEvent()+""});
+            db.update("UPDATE eventAttendancyList SET checkIn = ? WHERE idcharacter = ? AND idevent = ?", new String[] {checkin, checkInDTO.getIdChar()+"",checkInDTO.getIdEvent()+""});
             db.update("COMMIT", new String[]{});
             db.close();
 

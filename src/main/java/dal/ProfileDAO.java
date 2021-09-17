@@ -15,7 +15,7 @@ public class ProfileDAO {
     public ProfileDTO getProfileByEmail(String email){
         try {
             db.connect();
-            ResultSet rs = db.query("SELECT * FROM user WHERE email = ?", new String[] { email });
+            ResultSet rs = db.query("SELECT * FROM profile WHERE email = ?", new String[] { email });
             rs.next();
             ProfileDTO user = new ProfileDTO();
             setUser(rs, user);
@@ -34,7 +34,7 @@ public class ProfileDAO {
     public ProfileDTO updateUser(ProfileDTO dto){
         try {
             db.connect();
-            ResultSet rs = db.query("SELECT COUNT(*) as count FROM user WHERE email = ? AND idUser != ?", new String[] {dto.getEmail(), dto.getId()+""});
+            ResultSet rs = db.query("SELECT COUNT(*) as count FROM profile WHERE email = ? AND idUser != ?", new String[] {dto.getEmail(), dto.getId()+""});
             rs.next();
             int count = rs.getInt("count");
             rs.close();
@@ -44,7 +44,7 @@ public class ProfileDAO {
             int admin = 0;
             if (dto.isAdmin()) admin = 1;
 
-            db.update("UPDATE user SET " +
+            db.update("UPDATE profile SET " +
                             "firstName = ?, " +
                             "secondName = ?, " +
                             "email = ?, " +
@@ -53,8 +53,8 @@ public class ProfileDAO {
                             "salt = ?, "+
                             "admin = ? "+
                             "WHERE idUser = ?;",
-                    new String[] {dto.getFirstName(), dto.getLastName(), dto.getEmail(), dto.getPhone()+"", dto.getPassHash(), dto.getSalt(), admin+"", dto.getId()+""});
-            ResultSet rs2 = db.query("SELECT * FROM user WHERE email = ?", new String[] {dto.getEmail()});
+                    new String[] {dto.getFirstName(), dto.getLastName(), dto.getEmail(), dto.getPhone()+"", dto.getPassHash(), dto.getSalt(), String.valueOf(dto.isAdmin()), dto.getId()+""});
+            ResultSet rs2 = db.query("SELECT * FROM profile WHERE email = ?", new String[] {dto.getEmail()});
             rs2.next();
             ProfileDTO user = new ProfileDTO();
             setUser(rs2, user);
@@ -73,7 +73,7 @@ public class ProfileDAO {
     public boolean getEmailExists(String email){ //Returns true if email already exists in system
         try {
             db.connect();
-            ResultSet rs = db.query("SELECT COUNT(*) AS 'count' FROM user WHERE email = ?", new String[] { email });
+            ResultSet rs = db.query("SELECT COUNT(*) AS count FROM profile WHERE email = ?", new String[] { email });
             rs.next();
             int count = rs.getInt("count");
             rs.close();
@@ -91,7 +91,7 @@ public class ProfileDAO {
     public int getNextID() { //Returns true if email already exists in system
         try {
             db.connect();
-            ResultSet rs = db.query("SELECT MAX(idUser) AS max FROM user", new String[] {});
+            ResultSet rs = db.query("SELECT MAX(idUser) AS max FROM profile", new String[] {});
             rs.next();
             int max = rs.getInt("max");
             rs.close();
@@ -110,7 +110,7 @@ public class ProfileDAO {
         try {
             dto.setId(getNextID()); //Get ID assigned
             db.connect();
-            db.update("INSERT INTO user (idUser, firstName, secondName, email, phone, passHash, salt) VALUES (?,?,?,?,?,?,?)",
+            db.update("INSERT INTO profile (idUser, firstName, secondName, email, phone, passHash, salt) VALUES (?,?,?,?,?,?,?)",
                     new String[]{dto.getId()+"",dto.getFirstName(),dto.getLastName(),dto.getEmail(),dto.getPhone()+"",dto.getPassHash(),dto.getSalt()});
 
             ProfileDTO user = getProfileByEmail(dto.getEmail());
