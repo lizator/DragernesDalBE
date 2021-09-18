@@ -68,18 +68,16 @@ public class AbilityDAO {
             db.connect();
             ResultSet rs = db.query("SELECT * FROM companiondb.races WHERE idrace = ?", new String[] {raceID+""});
             List<AbilityDTO> abilityList = new ArrayList<>();
-            ArrayList<Integer> abilityIDs = new ArrayList<>();
+            ArrayList<Integer> idList = new ArrayList<>();
             rs.next();
             for (int i = 0; i < 4; i++){
-                int abilityID = rs.getInt(i+3);
-                abilityIDs.add(abilityID);
+                idList.add(rs.getInt(i+3));
             }
             rs.close();
             db.close();
-
-            for (int id : abilityIDs) {
+            for(int abilityID : idList){
                 db.connect();
-                ResultSet rs2 = db.query("SELECT * FROM companiondb.abilities WHERE idability = ?", new String[]{id + ""});
+                ResultSet rs2 = db.query("SELECT * FROM companiondb.abilities WHERE idability = ?", new String[] {abilityID+""});
                 rs2.next();
                 AbilityDTO ability = new AbilityDTO();
                 setAbility(rs2, ability);
@@ -87,7 +85,6 @@ public class AbilityDAO {
                 abilityList.add(ability);
                 db.close();
             }
-
             return abilityList;
 
         } catch (SQLException e) {

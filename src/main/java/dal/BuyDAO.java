@@ -17,7 +17,7 @@ public class BuyDAO {
         try {
             ArrayList<String> cmd = new ArrayList<>();
             for(AbilityDTO ability : buyDto.getAbilityBuyList()) {
-                if (!abilityDAO.getAbilityExist(ability.getId())) {
+                if ((!abilityDAO.getAbilityExist(ability.getId())) || ability.getType().equals("Magi")) {
                     if (ability.getId() == -3) { //generates new works and updates id
                         AbilityDTO work = abilityDAO.addCraft(ability.getName());
                         ability.setId(work.getId());
