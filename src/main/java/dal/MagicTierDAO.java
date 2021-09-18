@@ -11,10 +11,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MagicTierDAO {
-    private final SQLDatabaseIO db = new SQLDatabaseIO("ybyfqrmupcyoxk", "11e2c72d61349e7579224313c650c39ef21fea976dea1428f0fe38201b624e28", "ec2-52-214-178-113.eu-west-1.compute.amazonaws.com", 5432);
+    private SQLDatabaseIO getDb() {
+        return new SQLDatabaseIO("ybyfqrmupcyoxk", "11e2c72d61349e7579224313c650c39ef21fea976dea1428f0fe38201b624e28", "ec2-52-214-178-113.eu-west-1.compute.amazonaws.com", 5432);
+    }
+
+    //private final SQLDatabaseIO db = new SQLDatabaseIO("ybyfqrmupcyoxk", "11e2c72d61349e7579224313c650c39ef21fea976dea1428f0fe38201b624e28", "ec2-52-214-178-113.eu-west-1.compute.amazonaws.com", 5432);
 
     public List<MagicTierDTO> getAllTiers(){
         try {
+            SQLDatabaseIO db = getDb();
             db.connect();
             ResultSet rs = db.query("SELECT * FROM spelltiers", new String[] {});
             List<MagicTierDTO> tierList = new ArrayList<>();
@@ -36,6 +41,7 @@ public class MagicTierDAO {
 
     public List<MagicTierDTO> getTiersByCharID(int characterID){
         try {
+            SQLDatabaseIO db = getDb();
             db.connect();
             ResultSet rs = db.query("SELECT * FROM ownedspelltiers WHERE idcharacter = ?", new String[] {characterID+""});
             ArrayList<Integer> tierIDs = new ArrayList<>();
@@ -65,6 +71,7 @@ public class MagicTierDAO {
 
     public MagicTierDTO insertTierBought(int characterid, int tierid){
         try {
+            SQLDatabaseIO db = getDb();
             db.connect();
             db.update("INSERT INTO ownedspelltiers (idcharacter, idspelltier) VALUES (?,?)",
                     new String[]{characterid+"",tierid+""});
@@ -79,6 +86,7 @@ public class MagicTierDAO {
 
     public List<MagicTierDTO> setCharacterMagic(int characterid, ArrayList<MagicTierDTO> tierList){
         try {
+            SQLDatabaseIO db = getDb();
             db.connect();
             db.update("START TRANSACTION;",new String[]{});
             db.update("DELETE FROM ownedspelltiers WHERE idcharacter = ?", new String[]{characterid+""});
@@ -97,6 +105,7 @@ public class MagicTierDAO {
 
     public MagicTierDTO getByID(int tierID){
         try {
+            SQLDatabaseIO db = getDb();
             db.connect();
             ResultSet rs = db.query("SELECT * FROM spelltiers WHERE idtier = ?", new String[] {tierID+""});
             rs.next();

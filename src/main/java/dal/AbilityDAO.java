@@ -10,13 +10,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AbilityDAO {
-    private final SQLDatabaseIO db = new SQLDatabaseIO("ybyfqrmupcyoxk", "11e2c72d61349e7579224313c650c39ef21fea976dea1428f0fe38201b624e28", "ec2-52-214-178-113.eu-west-1.compute.amazonaws.com", 5432);
+
+    private SQLDatabaseIO getDb() {
+        return new SQLDatabaseIO("ybyfqrmupcyoxk", "11e2c72d61349e7579224313c650c39ef21fea976dea1428f0fe38201b624e28", "ec2-52-214-178-113.eu-west-1.compute.amazonaws.com", 5432);
+    }
+
+    //private final SQLDatabaseIO db = new SQLDatabaseIO("ybyfqrmupcyoxk", "11e2c72d61349e7579224313c650c39ef21fea976dea1428f0fe38201b624e28", "ec2-52-214-178-113.eu-west-1.compute.amazonaws.com", 5432);
 
     public List<AbilityDTO> getAbilitiesByCharacterID(int characterid) {
         try {
+            SQLDatabaseIO db = getDb();
             db.connect();
             ResultSet rs = db.query("SELECT * FROM owningAbilitiesView WHERE idcharacter = ?", new String[] {characterid+""});
-            return getAbilityDTOS(rs);
+            return getAbilityDTOS(rs, db);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -27,9 +33,10 @@ public class AbilityDAO {
 
     public List<AbilityDTO> getAllUnCommonAbilities(){
         try {
+            SQLDatabaseIO db = getDb();
             db.connect();
             ResultSet rs = db.query("SELECT * FROM abilities WHERE type != 'Viden' AND type != 'Sniger' AND type != 'Allemand' AND type != 'Kamp' AND type != 'Bad' AND type != 'Håndværk';", new String[] {});
-            return getAbilityDTOS(rs);
+            return getAbilityDTOS(rs, db);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -40,9 +47,10 @@ public class AbilityDAO {
 
     public List<AbilityDTO> getAll(){
         try {
+            SQLDatabaseIO db = getDb();
             db.connect();
             ResultSet rs = db.query("SELECT * FROM abilities;", new String[] {});
-            return getAbilityDTOS(rs);
+            return getAbilityDTOS(rs, db);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -51,7 +59,7 @@ public class AbilityDAO {
         }
     }
 
-    private List<AbilityDTO> getAbilityDTOS(ResultSet rs) throws SQLException {
+    private List<AbilityDTO> getAbilityDTOS(ResultSet rs, SQLDatabaseIO db) throws SQLException {
         List<AbilityDTO> abilityList = new ArrayList<>();
         while(rs.next()){
             AbilityDTO ability = new AbilityDTO();
@@ -65,6 +73,7 @@ public class AbilityDAO {
 
     public List<AbilityDTO> getAbilitiesByRaceID(int raceID) {
         try {
+            SQLDatabaseIO db = getDb();
             db.connect();
             ResultSet rs = db.query("SELECT * FROM races WHERE idrace = ?", new String[] {raceID+""});
             List<AbilityDTO> abilityList = new ArrayList<>();
@@ -96,9 +105,10 @@ public class AbilityDAO {
 
     public List<AbilityDTO> getRacestartersAbilities() {
         try {
+            SQLDatabaseIO db = getDb();
             db.connect();
             ResultSet rs = db.query("SELECT * FROM abilities WHERE cost = 0 AND type = 'Race' AND idability < 39", new String[] {});
-            return getAbilityDTOS(rs);
+            return getAbilityDTOS(rs, db);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -109,9 +119,10 @@ public class AbilityDAO {
 
     public List<AbilityDTO> getAbilitiesByType(String type) {
         try {
+            SQLDatabaseIO db = getDb();
             db.connect();
             ResultSet rs = db.query("SELECT * FROM abilities WHERE type = ? ORDER BY nameability", new String[] {type});
-            return getAbilityDTOS(rs);
+            return getAbilityDTOS(rs, db);
         } catch (SQLException e) {
             e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB with character");
@@ -121,6 +132,7 @@ public class AbilityDAO {
 
     public AbilityDTO getAbilityByID(int abilityID){
         try {
+            SQLDatabaseIO db = getDb();
             db.connect();
             ResultSet rs = db.query("SELECT * FROM abilities WHERE idability = ? ", new String[] {abilityID+""});
             rs.next();
@@ -139,6 +151,7 @@ public class AbilityDAO {
 
     public boolean getAbilityExist(int abilityID){
         try {
+            SQLDatabaseIO db = getDb();
             db.connect();
             ResultSet rs = db.query("SELECT count(*) AS exist FROM abilities WHERE idability = ? ", new String[] {abilityID+""});
             rs.next();
@@ -159,9 +172,11 @@ public class AbilityDAO {
 
     public AbilityDTO buyAbility(int characterID, int abilityID){
         try {
+            SQLDatabaseIO db = getDb();
             db.connect();
             db.update("INSERT INTO ownedabilities (idcharacter, idability) VALUES (?,?)",
                     new String[]{characterID+"",abilityID+""});
+            db.close();
             return getAbilityByID(abilityID);
 
         } catch (SQLException e) {
@@ -173,12 +188,14 @@ public class AbilityDAO {
 
     public AbilityDTO addCraft(String craft){
         try {
+            SQLDatabaseIO db = getDb();
             AbilityDTO dto = new AbilityDTO(getNextID(), craft, 1, "Dette er et Håndværk", "Håndværk", 0, "NULL", 0);
             db.connect();
             db.update("INSERT INTO abilities (idability, nameability, cost, type, pagenumber, shortdesc, command) VALUES (?,?,?,?,?,?,?)",
                     new String[]{dto.getId()+"",dto.getName(),
                     dto.getCost()+"", dto.getType(), dto.getPagenumber()+"",
                     dto.getDesc(), dto.getCommand()});
+            db.close();
             return getAbilityByID(dto.getId());
         } catch (SQLException e) {
             e.printStackTrace();
@@ -190,6 +207,7 @@ public class AbilityDAO {
     public ArrayList<String> getTypes(){
         ArrayList<String> types = new ArrayList<>();
         try {
+            SQLDatabaseIO db = getDb();
             db.connect();
             ResultSet rs = db.query("SELECT DISTINCT abilities.type FROM abilities;", new String[]{});
             while (rs.next()) {
@@ -208,6 +226,7 @@ public class AbilityDAO {
 
     public AbilityDTO createAbility(AbilityDTO dto) {
         try {
+            SQLDatabaseIO db = getDb();
             db.connect();
             db.update("START TRANSACTION;",new String[]{});
             db.update("INSERT INTO abilities (nameability, cost, type, shortdesc) VALUES (?,?,?,?)",
@@ -225,6 +244,7 @@ public class AbilityDAO {
 
     public AbilityDTO updateAbility(AbilityDTO dto) {
         try {
+            SQLDatabaseIO db = getDb();
             db.connect();
             db.update("START TRANSACTION;",new String[]{});
             db.update("UPDATE abilities SET " +
@@ -247,6 +267,7 @@ public class AbilityDAO {
 
     public List<AbilityDTO> setAbilities(int characterid, ArrayList<AbilityDTO> abilities) {
         try {
+            SQLDatabaseIO db = getDb();
             db.connect();
             db.update("START TRANSACTION;",new String[]{});
             db.update("DELETE FROM ownedabilities WHERE idcharacter = ?", new String[]{characterid+""});
@@ -265,6 +286,7 @@ public class AbilityDAO {
 
     public int getNextID(){
         try {
+            SQLDatabaseIO db = getDb();
             db.connect();
             ResultSet rs = db.query("SELECT MAX(idability) AS max FROM abilities;", new String[]{});
             rs.next();

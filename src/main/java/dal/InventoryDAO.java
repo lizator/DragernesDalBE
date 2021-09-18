@@ -10,11 +10,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class InventoryDAO {
-    private final SQLDatabaseIO db = new SQLDatabaseIO("ybyfqrmupcyoxk", "11e2c72d61349e7579224313c650c39ef21fea976dea1428f0fe38201b624e28", "ec2-52-214-178-113.eu-west-1.compute.amazonaws.com", 5432);
+    private SQLDatabaseIO getDb() {
+        return new SQLDatabaseIO("ybyfqrmupcyoxk", "11e2c72d61349e7579224313c650c39ef21fea976dea1428f0fe38201b624e28", "ec2-52-214-178-113.eu-west-1.compute.amazonaws.com", 5432);
+    }
+
+    //private final SQLDatabaseIO db = new SQLDatabaseIO("ybyfqrmupcyoxk", "11e2c72d61349e7579224313c650c39ef21fea976dea1428f0fe38201b624e28", "ec2-52-214-178-113.eu-west-1.compute.amazonaws.com", 5432);
 
     public List<InventoryDTO> getInventoryByCharacterIDWithUpdate(int characterid) {
         //return null;
         try {
+            SQLDatabaseIO db = getDb();
             db.connect();
             ResultSet rsStatus = db.query("(SELECT COUNT(*) as count FROM inventoryrelation WHERE idcharacter = ? AND Status = 'update')", new String[]{characterid+""});
             rsStatus.next();
@@ -50,6 +55,7 @@ public class InventoryDAO {
     public List<InventoryDTO> getCurrentInventoryByCharacterID(int characterid) {
         //return null;
         try {
+            SQLDatabaseIO db = getDb();
             db.connect();
 
             String status = "current";
@@ -78,6 +84,7 @@ public class InventoryDAO {
 
     public List<InventoryDTO> saveInventoryForUpdate(int characterid, ArrayList<InventoryDTO> inventory) {
         try {
+            SQLDatabaseIO db = getDb();
             int relationID = getNextID();
             List<InventoryDTO> itemList = new ArrayList<>();
             db.connect();
@@ -120,6 +127,7 @@ public class InventoryDAO {
 
     public InventoryDTO getState(int relationID){
         try {
+            SQLDatabaseIO db = getDb();
             db.connect();
             ResultSet rs = db.query("SELECT * FROM inventoryrelation WHERE idinventoryrelation = ?", new String[]{relationID+""});
             rs.next();
@@ -139,6 +147,7 @@ public class InventoryDAO {
     public void setupCharacterInventory(int characterid){
         try {
             int relationid = getNextID();
+            SQLDatabaseIO db = getDb();
             db.connect();
             db.update("INSERT INTO inventoryrelation (idinventoryrelation, idcharacter, Status) VALUES (?,?,'current')", new String[]{relationid+"", characterid+""});
             db.update("INSERT INTO inventory (idinventoryrelation, iditem, itemname, amount) " +
@@ -156,6 +165,7 @@ public class InventoryDAO {
 
     public InventoryDTO denyCharacter(int characterid){
         try {
+            SQLDatabaseIO db = getDb();
             db.connect();
             //Really nice sql!
             db.update("delete inventoryrelation, inventory from inventoryrelation " +
@@ -174,6 +184,7 @@ public class InventoryDAO {
 
     public InventoryDTO denyAllRelations(){
         try {
+            SQLDatabaseIO db = getDb();
             db.connect();
             db.update("delete inventoryrelation, inventory from inventoryrelation " +
                     "inner join inventory on inventoryrelation.idinventoryrelation = inventory.idinventoryrelation" +
@@ -191,11 +202,12 @@ public class InventoryDAO {
 
     public InventoryDTO confirmRelation(int characterid){
         try {
+            SQLDatabaseIO db = getDb();
             db.connect();
 
             ResultSet rsOld = db.query("SELECT * FROM inventoryrelation WHERE idcharacter = ? AND Status = 'current'", new String[]{characterid+""});
             int oldID = -1;
-            if(rsOld.next()!=false){
+            if(rsOld.next()){
                 oldID = rsOld.getInt("idinventoryrelation");
                 db.update("UPDATE inventoryrelation SET " +
                         "Status = 'old' " +
@@ -225,6 +237,7 @@ public class InventoryDAO {
 
     private int getNextID(){
         try {
+            SQLDatabaseIO db = getDb();
             db.connect();
             ResultSet rs = db.query("SELECT MAX(idinventoryrelation) AS max FROM inventoryrelation;", new String[]{});
             rs.next();

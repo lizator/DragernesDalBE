@@ -62,10 +62,17 @@ public class SQLDatabaseIO {
     public void update(String query, String[] strings) throws SQLException {
         if(connected){
             stmt = conn.createStatement();
-            stmt.executeUpdate("use "+db_name);
+            //stmt.executeUpdate("use "+db_name);
             PreparedStatement stmt = conn.prepareStatement(query); // SELECT * FROM user WHERE email = ?
+
             for (int i = 0; i < strings.length; i++) {
-                stmt.setString(i + 1, strings[i]);
+                try {
+                    int insert = Integer.parseInt(strings[i]);
+                    stmt.setInt(i + 1, insert);
+                } catch (NumberFormatException e){
+                    stmt.setString(i + 1, strings[i]);
+                }
+
             }
             System.out.println(stmt.toString());
             stmt.executeUpdate();
@@ -84,10 +91,20 @@ public class SQLDatabaseIO {
         if(!connected){
             System.out.println("Connect to a DB first");
         } else{
+            String finalQuery = "";
+
             PreparedStatement stmt = conn.prepareStatement(query); // SELECT * FROM user WHERE email = ?
             for (int i = 0; i < strings.length; i++) {
-                stmt.setString(i + 1, strings[i]);
+                try {
+                    int insert = Integer.parseInt(strings[i]);
+                    stmt.setInt(i + 1, insert);
+                } catch (NumberFormatException e){
+                    stmt.setString(i + 1, strings[i]);
+                }
+
             }
+
+            System.out.println(stmt.toString());
 
             result = stmt.executeQuery();
         }

@@ -12,10 +12,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RaceDAO {
-    private final SQLDatabaseIO db = new SQLDatabaseIO("ybyfqrmupcyoxk", "11e2c72d61349e7579224313c650c39ef21fea976dea1428f0fe38201b624e28", "ec2-52-214-178-113.eu-west-1.compute.amazonaws.com", 5432);
+    private SQLDatabaseIO getDb() {
+        return new SQLDatabaseIO("ybyfqrmupcyoxk", "11e2c72d61349e7579224313c650c39ef21fea976dea1428f0fe38201b624e28", "ec2-52-214-178-113.eu-west-1.compute.amazonaws.com", 5432);
+    }
+
+    //private final SQLDatabaseIO db = new SQLDatabaseIO("ybyfqrmupcyoxk", "11e2c72d61349e7579224313c650c39ef21fea976dea1428f0fe38201b624e28", "ec2-52-214-178-113.eu-west-1.compute.amazonaws.com", 5432);
 
     public List<RaceDTO> getRacesStandartDeprecated() { //Deprecated, should get < 11. Here for old version of app.
         try {
+            SQLDatabaseIO db = getDb();
             db.connect();
             ResultSet rs = db.query("SELECT * FROM races WHERE idrace < 10", new String[]{});
             List<RaceDTO> raceList = new ArrayList<>();
@@ -37,6 +42,7 @@ public class RaceDAO {
 
     public List<RaceDTO> getRacesStandart() { //Deprecated, should get < 11. Here for old version of app.
         try {
+            SQLDatabaseIO db = getDb();
             db.connect();
             ResultSet rs = db.query("SELECT * FROM races WHERE idrace < 11", new String[]{});
             List<RaceDTO> raceList = new ArrayList<>();
@@ -58,6 +64,7 @@ public class RaceDAO {
 
     public List<RaceDTO> getCustomRaces() {
         try {
+            SQLDatabaseIO db = getDb();
             db.connect();
             ResultSet rs = db.query("SELECT * FROM races WHERE idrace > 10", new String[]{});
             List<RaceDTO> raceList = new ArrayList<>();
@@ -79,6 +86,7 @@ public class RaceDAO {
 
     public RaceDTO updateRace(RaceDTO dto) {
         try {
+            SQLDatabaseIO db = getDb();
             db.connect();
             db.update("START TRANSACTION;", new String[]{});
             db.update("UPDATE races SET " +
@@ -107,6 +115,7 @@ public class RaceDAO {
 
     public RaceDTO createRace(RaceDTO dto) {
         try {
+            SQLDatabaseIO db = getDb();
             db.connect();
             db.update("START TRANSACTION;", new String[]{});
             db.update("INSERT INTO races (racename, start, twoep, threeep, fourep)" +
@@ -124,6 +133,7 @@ public class RaceDAO {
 
     public RaceDTO getRace(int raceID) {
         try {
+            SQLDatabaseIO db = getDb();
             db.connect();
             ResultSet rs = db.query("SELECT * FROM races WHERE idrace = ?", new String[]{raceID + ""});
             RaceDTO race = new RaceDTO();
@@ -142,6 +152,7 @@ public class RaceDAO {
 
     public List<RaceDTO> getCharacterRaces(int characterID) {
         try {
+            SQLDatabaseIO db = getDb();
             db.connect();
             ResultSet rs0 = db.query("SELECT COUNT(*) AS count FROM krysling WHERE idcharacter = ?", new String[]{characterID + ""});
             rs0.next();
@@ -158,6 +169,7 @@ public class RaceDAO {
                 db.close();
                 return raceList;
             }
+            db.close();
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "character not in Krysling-table");
 
         } catch (SQLException e) {

@@ -12,10 +12,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AttendingDAO {
-    private final SQLDatabaseIO db = new SQLDatabaseIO("ybyfqrmupcyoxk", "11e2c72d61349e7579224313c650c39ef21fea976dea1428f0fe38201b624e28", "ec2-52-214-178-113.eu-west-1.compute.amazonaws.com", 5432);
+    private SQLDatabaseIO getDb() {
+        return new SQLDatabaseIO("ybyfqrmupcyoxk", "11e2c72d61349e7579224313c650c39ef21fea976dea1428f0fe38201b624e28", "ec2-52-214-178-113.eu-west-1.compute.amazonaws.com", 5432);
+    }
+
+    //private final SQLDatabaseIO db = new SQLDatabaseIO("ybyfqrmupcyoxk", "11e2c72d61349e7579224313c650c39ef21fea976dea1428f0fe38201b624e28", "ec2-52-214-178-113.eu-west-1.compute.amazonaws.com", 5432);
 
     public List<AttendingDTO> getAllAttending(int charID) {
         try {
+            SQLDatabaseIO db = getDb();
             db.connect();
             ResultSet rs = db.query("SELECT * FROM eventAttendancyList WHERE idcharacter = ?", new String[] {charID+""});
             List<AttendingDTO> attendingList = new ArrayList<>();
@@ -42,6 +47,7 @@ public class AttendingDAO {
 
     public AttendingDTO setAttending(AttendingDTO dto) {
         try {
+            SQLDatabaseIO db = getDb();
             db.connect();
             db.update("START TRANSACTION;",new String[]{});
             db.update("INSERT INTO eventAttendancyList (idcharacter, idevent) VALUES (?,?)", new String[] {dto.getIdChar()+"",dto.getIdEvent()+""});
@@ -59,6 +65,7 @@ public class AttendingDAO {
 
     public AttendingDTO removeAttending(AttendingDTO dto) {
         try {
+            SQLDatabaseIO db = getDb();
             db.connect();
             db.update("START TRANSACTION;",new String[]{});
             db.update("DELETE FROM eventAttendancyList WHERE (idcharacter = ?) and (idevent = ?);", new String[] {dto.getIdChar()+"",dto.getIdEvent()+""});

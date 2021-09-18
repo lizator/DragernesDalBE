@@ -9,7 +9,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class BuyDAO {
-    private final SQLDatabaseIO db = new SQLDatabaseIO("ybyfqrmupcyoxk", "11e2c72d61349e7579224313c650c39ef21fea976dea1428f0fe38201b624e28", "ec2-52-214-178-113.eu-west-1.compute.amazonaws.com", 5432);
+    private SQLDatabaseIO getDb() {
+        return new SQLDatabaseIO("ybyfqrmupcyoxk", "11e2c72d61349e7579224313c650c39ef21fea976dea1428f0fe38201b624e28", "ec2-52-214-178-113.eu-west-1.compute.amazonaws.com", 5432);
+    }
+
+    //private final SQLDatabaseIO db = new SQLDatabaseIO("ybyfqrmupcyoxk", "11e2c72d61349e7579224313c650c39ef21fea976dea1428f0fe38201b624e28", "ec2-52-214-178-113.eu-west-1.compute.amazonaws.com", 5432);
     CharacterDAO characterDAO = new CharacterDAO();
     AbilityDAO abilityDAO = new AbilityDAO();
 
@@ -30,6 +34,7 @@ public class BuyDAO {
                     cmd.add("INSERT INTO ownedabilities (idcharacter, idability) VALUES (" + buyDto.getCharacter().getIdcharacter() + "," + ability.getId() + "); ");
                 }
             }
+            SQLDatabaseIO db = getDb();
             db.connect();
             for (String c : cmd)
                 db.update(c, new String[]{});
