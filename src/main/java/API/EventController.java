@@ -1,11 +1,9 @@
 package API;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import dal.AttendingDAO;
 import dal.CheckInDAO;
 import dal.EventDAO;
 import dal.dto.AttendingDTO;
-import dal.dto.CharacterDTO;
 import dal.dto.CheckInDTO;
 import dal.dto.EventDTO;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +15,11 @@ public class EventController {
     EventDAO dao = new EventDAO();
     AttendingDAO daoA = new AttendingDAO();
     CheckInDAO daoC = new CheckInDAO();
+
+    @GetMapping(value = "/event/currentEvents", produces = "application/json") //Works
+    public List<EventDTO> getCurrentEvents() {
+        return dao.getCurrentEvents();
+    }
 
     @GetMapping(value = "/event/events", produces = "application/json") //Works
     public List<EventDTO> getAllEvents() {

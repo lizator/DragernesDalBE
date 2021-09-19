@@ -49,9 +49,14 @@ public class CharacterDAO {
     public List<CharacterDTO> getCharactersByEventID(int eventID, int checkedIn){
         try {
             SQLDatabaseIO db = getDb();
+            String check = "false";
+            if (checkedIn == 1) {
+                check = "true";
+            }
             db.connect();
             ResultSet rs = db.query("SELECT * FROM characterInfoView inner join eventAttendancyList" +
-                    " on eventAttendancyList.idcharacter = characterInfoView.idcharacter where eventAttendancyList.idevent = ? and eventAttendancyList.checkIn = ?;", new String[] {eventID+"",checkedIn+""});
+                    " on eventAttendancyList.idcharacter = characterInfoView.idcharacter where eventAttendancyList.idevent = ? and eventAttendancyList.checkIn = ?;",
+                    new String[] {eventID+"",check});
             List<CharacterDTO> charList = new ArrayList<>();
             while (rs.next()) {
                 CharacterDTO character = new CharacterDTO();

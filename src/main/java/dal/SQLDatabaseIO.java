@@ -70,11 +70,23 @@ public class SQLDatabaseIO {
                     int insert = Integer.parseInt(strings[i]);
                     stmt.setInt(i + 1, insert);
                 } catch (NumberFormatException e){
-                    stmt.setString(i + 1, strings[i]);
+                    try {
+                        if (strings[i].split("T").length == 2) {
+                            String s = strings[i].split("T")[0] + " " +  strings[i].split("T")[1] + ":00";
+                            Timestamp insert = Timestamp.valueOf(s);
+                            stmt.setTimestamp(i + 1, insert);
+                        } else {
+                            throw new IllegalArgumentException();
+                        }
+                    } catch (IllegalArgumentException e2) {
+                        if (strings[i].equals("true") || strings[i].equals("false")) {
+                            stmt.setBoolean(i + 1, Boolean.parseBoolean(strings[i]));
+                        } else stmt.setString(i + 1, strings[i]);
+                    }
                 }
 
             }
-            System.out.println(stmt.toString());
+            //System.out.println(stmt.toString());
             stmt.executeUpdate();
         }
     }
@@ -99,12 +111,24 @@ public class SQLDatabaseIO {
                     int insert = Integer.parseInt(strings[i]);
                     stmt.setInt(i + 1, insert);
                 } catch (NumberFormatException e){
-                    stmt.setString(i + 1, strings[i]);
+                    try {
+                        if (strings[i].split("T").length == 2) {
+                            String s = strings[i].split("T")[0] + " " +  strings[i].split("T")[1] + ":00";
+                            Timestamp insert = Timestamp.valueOf(s);
+                            stmt.setTimestamp(i + 1, insert);
+                        } else {
+                            throw new IllegalArgumentException();
+                        }
+                    } catch (IllegalArgumentException e2) {
+                        if (strings[i].equals("true") || strings[i].equals("false")) {
+                            stmt.setBoolean(i + 1, Boolean.parseBoolean(strings[i]));
+                        } else stmt.setString(i + 1, strings[i]);
+                    }
                 }
 
             }
 
-            System.out.println(stmt.toString());
+            //System.out.println(stmt.toString());
 
             result = stmt.executeQuery();
         }
