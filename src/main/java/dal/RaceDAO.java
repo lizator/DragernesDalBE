@@ -66,7 +66,7 @@ public class RaceDAO {
         try {
             SQLDatabaseIO db = getDb();
             db.connect();
-            ResultSet rs = db.query("SELECT * FROM races WHERE idrace > 10", new String[]{});
+            ResultSet rs = db.query("SELECT * FROM races WHERE idrace > 11", new String[]{});
             List<RaceDTO> raceList = new ArrayList<>();
             while (rs.next()) {
                 RaceDTO race = new RaceDTO();
@@ -115,11 +115,12 @@ public class RaceDAO {
 
     public RaceDTO createRace(RaceDTO dto) {
         try {
+            int nextId = getNextID();
             SQLDatabaseIO db = getDb();
             db.connect();
             db.update("START TRANSACTION;", new String[]{});
-            db.update("INSERT INTO races (racename, start, twoep, threeep, fourep)" +
-                    " VALUES (?,?,?,?,?)", new String[]{dto.getRacename() + "", dto.getStart() + "", dto.getEp2() + "", dto.getEp3() + "", dto.getEp4() + ""});
+            db.update("INSERT INTO races (idrace, racename, start, twoep, threeep, fourep)" +
+                    " VALUES (?,?,?,?,?,?)", new String[]{String.valueOf(nextId), dto.getRacename() + "", dto.getStart() + "", dto.getEp2() + "", dto.getEp3() + "", dto.getEp4() + ""});
             db.update("COMMIT;", new String[]{});
             db.close();
             return dto;
@@ -175,6 +176,23 @@ public class RaceDAO {
         } catch (SQLException e) {
             e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB with krysling");
+            //throw new SQLException("Error in Database");
+        }
+    }
+
+    public int getNextID() {
+        try {
+            SQLDatabaseIO db = getDb();
+            db.connect();
+            ResultSet rs = db.query("SELECT MAX(idrace) AS max FROM races;", new String[]{});
+            rs.next();
+            int max = rs.getInt("max");
+            rs.close();
+            db.close();
+            return max + 1;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB with next idability");
             //throw new SQLException("Error in Database");
         }
     }

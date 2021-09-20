@@ -226,11 +226,12 @@ public class AbilityDAO {
 
     public AbilityDTO createAbility(AbilityDTO dto) {
         try {
+            int nextID = getNextID();
             SQLDatabaseIO db = getDb();
             db.connect();
             db.update("START TRANSACTION;",new String[]{});
-            db.update("INSERT INTO abilities (nameability, cost, type, shortdesc) VALUES (?,?,?,?)",
-                    new String[] {dto.getName(),dto.getCost()+"",dto.getType(),dto.getDesc()});
+            db.update("INSERT INTO abilities (idability, nameability, cost, type, shortdesc) VALUES (?,?,?,?,?)",
+                    new String[] {String.valueOf(nextID), dto.getName(),dto.getCost()+"",dto.getType(),dto.getDesc()});
             db.update("COMMIT", new String[]{});
             db.close();
 
