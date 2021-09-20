@@ -21,6 +21,11 @@ public class ProfileController { //TODO implement sessions
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email not found");
     }
 
+    @PostMapping(value = "/user/update", consumes = "application/json", produces = "application/json")
+    public ProfileDTO updateUser(@RequestBody ProfileDTO dto) throws ResponseStatusException {
+        return dao.updateUser(dto);
+    }
+
     @PostMapping(value = "/user/login", consumes = "application/json", produces = "application/json")
     public ProfileDTO login(@RequestBody ProfileDTO dto) throws ResponseStatusException {
         if (dao.getEmailExists(dto.getEmail())) {
@@ -52,6 +57,14 @@ public class ProfileController { //TODO implement sessions
             return dao.createUser(dto);
         }
         throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Email already exists");
+    }
+
+    @PostMapping(value = "/user/updatePass", consumes = "application/json", produces = "application/json")
+    public ProfileDTO updatePass(@RequestBody ProfileDTO dto) throws ResponseStatusException {
+            ArrayList<String> passList = passHandler.encryptPassword(dto.getPassHash());
+            dto.setPassHash(passList.get(0));
+            dto.setSalt(passList.get(1));
+            return dao.updateUser(dto);
     }
 
 

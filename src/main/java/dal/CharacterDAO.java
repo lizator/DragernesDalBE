@@ -1,6 +1,9 @@
 package dal;
 
+import dal.dto.AbilityDTO;
+import dal.dto.BuyDTO;
 import dal.dto.CharacterDTO;
+import dal.dto.RaceDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -10,14 +13,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CharacterDAO {
-    private final SQLDatabaseIO db = new SQLDatabaseIO("kamel", "dreng", "runerne.dk", 8003);
+    private SQLDatabaseIO getDb() {
+        return new SQLDatabaseIO("ybyfqrmupcyoxk", "11e2c72d61349e7579224313c650c39ef21fea976dea1428f0fe38201b624e28", "ec2-52-214-178-113.eu-west-1.compute.amazonaws.com", 5432);
+    }
+
+    //private final SQLDatabaseIO db = new SQLDatabaseIO("ybyfqrmupcyoxk", "11e2c72d61349e7579224313c650c39ef21fea976dea1428f0fe38201b624e28", "ec2-52-214-178-113.eu-west-1.compute.amazonaws.com", 5432);
+    InventoryDAO inventoryDAO = new InventoryDAO();
+    RaceDAO raceDAO = new RaceDAO();
+    AbilityDAO abilityDAO = new AbilityDAO();
 
     public CharacterDAO(){}
 
     public List<CharacterDTO> getCharactersByUserID(int userID){
         try {
+            SQLDatabaseIO db = getDb();
             db.connect();
-            ResultSet rs = db.query("SELECT * FROM companiondb.characterInfoView WHERE iduser = ? AND status = 'aktiv'", new String[] {userID+""});
+            ResultSet rs = db.query("SELECT * FROM characterInfoView WHERE iduser = ?", new String[] {String.valueOf(userID)});
             List<CharacterDTO> charList = new ArrayList<>();
             while (rs.next()) {
                 CharacterDTO character = new CharacterDTO();
@@ -35,11 +46,75 @@ public class CharacterDAO {
         }
     }
 
+    public List<CharacterDTO> getCharactersByEventID(int eventID, int checkedIn){
+        try {
+            SQLDatabaseIO db = getDb();
+            String check = "false";
+            if (checkedIn == 1) {
+                check = "true";
+            }
+            db.connect();
+            ResultSet rs = db.query("SELECT * FROM characterInfoView inner join eventAttendancyList" +
+                    " on eventAttendancyList.idcharacter = characterInfoView.idcharacter where eventAttendancyList.idevent = ? and eventAttendancyList.checkIn = ?;",
+                    new String[] {eventID+"",check});
+            List<CharacterDTO> charList = new ArrayList<>();
+            while (rs.next()) {
+                CharacterDTO character = new CharacterDTO();
+                setCharacter(rs, character);
+                charList.add(character);
+            }
+            rs.close();
+            db.close();
+            return charList;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB with character");
+            //throw new SQLException("Error in Database");
+        }
+    }
+
+
+
     public CharacterDTO insertKrysling(int characterid, int race1id, int race2id){
         try {
+            SQLDatabaseIO db = getDb();
             db.connect();
-            db.update("INSERT INTO companiondb.krysling (idcharacter, race1, race2) " +
+            db.update("INSERT INTO krysling (idcharacter, race1, race2) " +
                     "VALUES (?, ?, ?)", new String[] {characterid+"", race1id+"", race2id+""});
+            db.close();
+            return getCharacterByID(characterid);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB with character");
+            //throw new SQLException("Error in Database");
+        }
+    }
+
+    public List<RaceDTO> updateKrysling(int characterid, int race1id, int race2id){
+        try {
+            SQLDatabaseIO db = getDb();
+            db.connect();
+            db.update("UPDATE krysling SET race1 = ?, race2 = ? WHERE idcharacter = ?",
+                    new String[] { race1id+"", race2id+"", characterid+""});
+            db.close();
+            RaceDAO raceDAO = new RaceDAO();
+            return raceDAO.getCharacterRaces(characterid);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB with character");
+            //throw new SQLException("Error in Database");
+        }
+    }
+
+    public CharacterDTO deleteKrysling(int characterid){
+        try {
+            SQLDatabaseIO db = getDb();
+            db.connect();
+            db.update("DELETE FROM krysling WHERE idcharacter = ?", new String[] {characterid+""});
+            db.close();
             return getCharacterByID(characterid);
 
         } catch (SQLException e) {
@@ -51,8 +126,9 @@ public class CharacterDAO {
 
     public CharacterDTO getCharacterByID(int characterID){
         try {
+            SQLDatabaseIO db = getDb();
             db.connect();
-            ResultSet rs = db.query("SELECT * FROM companiondb.characterInfoView WHERE idcharacter = ?", new String[] {characterID+""});
+            ResultSet rs = db.query("SELECT * FROM characterInfoView WHERE idcharacter = ?", new String[] {characterID+""});
             List<CharacterDTO> charList = new ArrayList<>();
             rs.next();
             CharacterDTO character = new CharacterDTO();
@@ -71,8 +147,9 @@ public class CharacterDAO {
  //TODO remove
     public CharacterDTO updateCharacter(CharacterDTO dto){
         try {
+            SQLDatabaseIO db = getDb();
             db.connect();
-            db.update("UPDATE companiondb.character SET " +
+            db.update("UPDATE character SET " +
                     "iduser = ?, " +
                     "namecharacter = ?, " +
                     "idrace = ?, " +
@@ -91,6 +168,7 @@ public class CharacterDAO {
                             dto.getHealth()+"",
                             dto.getBackground()+"",
                             dto.getIdcharacter()+""});
+            db.close();
             return dto;
 
         } catch (SQLException e) {
@@ -103,30 +181,53 @@ public class CharacterDAO {
     public CharacterDTO createCharacter(CharacterDTO dto){
         try {
             dto.setIdcharacter(getNextID()); //Get ID assigned
-            dto.setStatus("aktiv");
+            SQLDatabaseIO db = getDb();
             db.connect();
             db.update("START TRANSACTION;",new String[]{});
-            db.update("INSERT INTO companiondb.character (idcharacter, iduser, " +
-                    "namecharacter, idrace, age, status, background) VALUES (?, ?, ?, ?, ?, ?, ?)",new String[] {dto.getIdcharacter()+"",dto.getIduser()+"",dto.getName(),dto.getIdrace()+"",dto.getAge()+"",dto.getStatus(),dto.getBackground()});
-            db.update("INSERT INTO companiondb.inventory (iditem, idcharacter, itemname, amount) " +
-                    "VALUES " +
-                    "(1, ?, 'Guld', 0), " +
-                    "(2, ?, 'Sølv', 0), " +
-                    "(3, ?, 'Kobber', 0)",new String[]{dto.getIdcharacter()+"",dto.getIdcharacter()+"",dto.getIdcharacter()+""});
-            //out-comment getting ability
-            /*ResultSet rs = db.query("SELECT * FROM companiondb.races WHERE idrace = ?", new String[] {dto.getIdrace()+""});
-            rs.next();
-            int startingAbilityID = rs.getInt("start");
-            db.update("INSERT INTO companiondb.ownedabilities (idcharacter, idability) VALUES (?, ?)",new String[]{dto.getIdcharacter()+"",startingAbilityID+""});*/
+            db.update("INSERT INTO character (idcharacter, iduser, " +
+                    "namecharacter, idrace, age, background) VALUES (?, ?, ?, ?, ?, ?)",new String[] {dto.getIdcharacter()+"",dto.getIduser()+"",dto.getName(),dto.getIdrace()+"",dto.getAge()+"",dto.getBackground()});
             db.update("COMMIT;", new String[]{});
             db.close();
 
+            inventoryDAO.setupCharacterInventory(dto.getIdcharacter());
             CharacterDTO character = getCharacterByID(dto.getIdcharacter());
             return character;
 
         } catch (SQLException e) {
             e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB: creating character");
+            //throw new SQLException("Error in Database");
+        }
+    }
+
+    public BuyDTO createCharacterAndGetAbility(CharacterDTO dto){
+        //Creating Character as normal
+        CharacterDTO characterDTO = createCharacter(dto);
+
+        //Finding starting ability
+        RaceDTO race = raceDAO.getRace(dto.getIdrace());
+        AbilityDTO ability = abilityDAO.getAbilityByID(race.getStart());
+
+        //Adding ability to a BuyDTO for transport
+        BuyDTO buyDTO = new BuyDTO(characterDTO, new ArrayList<AbilityDTO>());
+        buyDTO.getAbilityBuyList().add(ability);
+
+        return buyDTO;
+    }
+
+    public CharacterDTO deleteCharacter(int characterid){
+        try {
+            SQLDatabaseIO db = getDb();
+            db.connect();
+            db.update("DELETE FROM character WHERE idcharacter = ?",new String[] {characterid+""});
+            db.close();
+            CharacterDTO character = new CharacterDTO();
+            character.setIdcharacter(1);
+            return character;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB: deleting character");
             //throw new SQLException("Error in Database");
         }
     }
@@ -140,9 +241,6 @@ public class CharacterDAO {
         character.setRaceName(rs.getString("racename"));
         character.setAge(rs.getInt("age"));
         character.setCurrentep(rs.getInt("currentep"));
-        character.setStatus(rs.getString("status"));
-        character.setDate(rs.getDate("date"));
-        character.setTimestamp(rs.getTime("timestamp"));
         character.setStrength(rs.getInt("strength"));
         character.setHealth(rs.getInt("health"));
         character.setBackground(rs.getString("background"));
@@ -150,8 +248,9 @@ public class CharacterDAO {
 
     public int getNextID(){ //Returns true if email already exists in system
         try {
+            SQLDatabaseIO db = getDb();
             db.connect();
-            ResultSet rs = db.query("SELECT MAX(idCharacter) AS max FROM companiondb.character;",new String[]{});
+            ResultSet rs = db.query("SELECT MAX(idCharacter) AS max FROM character;",new String[]{});
             rs.next();
             int max = rs.getInt("max");
             rs.close();
