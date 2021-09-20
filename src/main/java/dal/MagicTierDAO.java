@@ -11,12 +11,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MagicTierDAO {
-    private final SQLDatabaseIO db = new SQLDatabaseIO("kamel", "dreng", "runerne.dk", 8003);
+    private SQLDatabaseIO getDb() {
+        return new SQLDatabaseIO("ybyfqrmupcyoxk", "11e2c72d61349e7579224313c650c39ef21fea976dea1428f0fe38201b624e28", "ec2-52-214-178-113.eu-west-1.compute.amazonaws.com", 5432);
+    }
+
+    //private final SQLDatabaseIO db = new SQLDatabaseIO("ybyfqrmupcyoxk", "11e2c72d61349e7579224313c650c39ef21fea976dea1428f0fe38201b624e28", "ec2-52-214-178-113.eu-west-1.compute.amazonaws.com", 5432);
 
     public List<MagicTierDTO> getAllTiers(){
         try {
+            SQLDatabaseIO db = getDb();
             db.connect();
-            ResultSet rs = db.query("SELECT * FROM companiondb.spelltiers", new String[] {});
+            ResultSet rs = db.query("SELECT * FROM spelltiers", new String[] {});
             List<MagicTierDTO> tierList = new ArrayList<>();
             while (rs.next()) {
                 MagicTierDTO tier = new MagicTierDTO();
@@ -36,8 +41,9 @@ public class MagicTierDAO {
 
     public List<MagicTierDTO> getTiersByCharID(int characterID){
         try {
+            SQLDatabaseIO db = getDb();
             db.connect();
-            ResultSet rs = db.query("SELECT * FROM companiondb.ownedspelltiers WHERE idcharacter = ?", new String[] {characterID+""});
+            ResultSet rs = db.query("SELECT * FROM ownedspelltiers WHERE idcharacter = ?", new String[] {characterID+""});
             ArrayList<Integer> tierIDs = new ArrayList<>();
             while(rs.next()){
                 tierIDs.add(rs.getInt("idspelltier"));
@@ -45,7 +51,7 @@ public class MagicTierDAO {
             rs.close();
             List<MagicTierDTO> tierList = new ArrayList<>();
             for (int id : tierIDs){
-                ResultSet rs2 = db.query("SELECT * FROM companiondb.spelltiers WHERE idtier = ?", new String[] {id+""});
+                ResultSet rs2 = db.query("SELECT * FROM spelltiers WHERE idtier = ?", new String[] {id+""});
                 rs2.next();
                 MagicTierDTO dto = new MagicTierDTO();
                 setTier(rs2, dto);
@@ -65,8 +71,9 @@ public class MagicTierDAO {
 
     public MagicTierDTO insertTierBought(int characterid, int tierid){
         try {
+            SQLDatabaseIO db = getDb();
             db.connect();
-            db.update("INSERT INTO companiondb.ownedspelltiers (idcharacter, idspelltier) VALUES (?,?)",
+            db.update("INSERT INTO ownedspelltiers (idcharacter, idspelltier) VALUES (?,?)",
                     new String[]{characterid+"",tierid+""});
             db.close();
             return getByID(tierid);
@@ -79,11 +86,12 @@ public class MagicTierDAO {
 
     public List<MagicTierDTO> setCharacterMagic(int characterid, ArrayList<MagicTierDTO> tierList){
         try {
+            SQLDatabaseIO db = getDb();
             db.connect();
             db.update("START TRANSACTION;",new String[]{});
-            db.update("DELETE FROM companiondb.ownedspelltiers WHERE idcharacter = ?", new String[]{characterid+""});
+            db.update("DELETE FROM ownedspelltiers WHERE idcharacter = ?", new String[]{characterid+""});
             for (MagicTierDTO dto : tierList){
-                db.update("INSERT INTO companiondb.ownedspelltiers (idcharacter, idspelltier) VALUES (?,?)",
+                db.update("INSERT INTO ownedspelltiers (idcharacter, idspelltier) VALUES (?,?)",
                         new String[]{characterid+"",dto.getID()+""});
             }
             db.update("COMMIT", new String[]{});
@@ -97,8 +105,9 @@ public class MagicTierDAO {
 
     public MagicTierDTO getByID(int tierID){
         try {
+            SQLDatabaseIO db = getDb();
             db.connect();
-            ResultSet rs = db.query("SELECT * FROM companiondb.spelltiers WHERE idtier = ?", new String[] {tierID+""});
+            ResultSet rs = db.query("SELECT * FROM spelltiers WHERE idtier = ?", new String[] {tierID+""});
             rs.next();
             MagicTierDTO dto = new MagicTierDTO();
             setTier(rs, dto);

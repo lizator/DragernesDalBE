@@ -7,15 +7,20 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class ProfileDAO {
-    private final SQLDatabaseIO db = new SQLDatabaseIO("kamel", "dreng", "runerne.dk", 8003);
+    private SQLDatabaseIO getDb() {
+        return new SQLDatabaseIO("ybyfqrmupcyoxk", "11e2c72d61349e7579224313c650c39ef21fea976dea1428f0fe38201b624e28", "ec2-52-214-178-113.eu-west-1.compute.amazonaws.com", 5432);
+    }
+
+    //private final SQLDatabaseIO db = new SQLDatabaseIO("ybyfqrmupcyoxk", "11e2c72d61349e7579224313c650c39ef21fea976dea1428f0fe38201b624e28", "ec2-52-214-178-113.eu-west-1.compute.amazonaws.com", 5432);
 
     public ProfileDAO() {
     }
 
     public ProfileDTO getProfileByEmail(String email){
         try {
+            SQLDatabaseIO db = getDb();
             db.connect();
-            ResultSet rs = db.query("SELECT * FROM user WHERE email = ?", new String[] { email });
+            ResultSet rs = db.query("SELECT * FROM profile WHERE email = ?", new String[] { email });
             rs.next();
             ProfileDTO user = new ProfileDTO();
             setUser(rs, user);
@@ -33,8 +38,9 @@ public class ProfileDAO {
 
     public ProfileDTO updateUser(ProfileDTO dto){
         try {
+            SQLDatabaseIO db = getDb();
             db.connect();
-            ResultSet rs = db.query("SELECT COUNT(*) as count FROM companiondb.user WHERE email = ? AND idUser != ?", new String[] {dto.getEmail(), dto.getId()+""});
+            ResultSet rs = db.query("SELECT COUNT(*) as count FROM profile WHERE email = ? AND idUser != ?", new String[] {dto.getEmail(), dto.getId()+""});
             rs.next();
             int count = rs.getInt("count");
             rs.close();
@@ -44,7 +50,7 @@ public class ProfileDAO {
             int admin = 0;
             if (dto.isAdmin()) admin = 1;
 
-            db.update("UPDATE companiondb.user SET " +
+            db.update("UPDATE profile SET " +
                             "firstName = ?, " +
                             "secondName = ?, " +
                             "email = ?, " +
@@ -53,8 +59,8 @@ public class ProfileDAO {
                             "salt = ?, "+
                             "admin = ? "+
                             "WHERE idUser = ?;",
-                    new String[] {dto.getFirstName(), dto.getLastName(), dto.getEmail(), dto.getPhone()+"", dto.getPassHash(), dto.getSalt(), admin+"", dto.getId()+""});
-            ResultSet rs2 = db.query("SELECT * FROM user WHERE email = ?", new String[] {dto.getEmail()});
+                    new String[] {dto.getFirstName(), dto.getLastName(), dto.getEmail(), dto.getPhone()+"", dto.getPassHash(), dto.getSalt(), String.valueOf(dto.isAdmin()), dto.getId()+""});
+            ResultSet rs2 = db.query("SELECT * FROM profile WHERE email = ?", new String[] {dto.getEmail()});
             rs2.next();
             ProfileDTO user = new ProfileDTO();
             setUser(rs2, user);
@@ -72,8 +78,9 @@ public class ProfileDAO {
 
     public boolean getEmailExists(String email){ //Returns true if email already exists in system
         try {
+            SQLDatabaseIO db = getDb();
             db.connect();
-            ResultSet rs = db.query("SELECT COUNT(*) AS 'count' FROM user WHERE email = ?", new String[] { email });
+            ResultSet rs = db.query("SELECT COUNT(*) AS count FROM profile WHERE email = ?", new String[] { email });
             rs.next();
             int count = rs.getInt("count");
             rs.close();
@@ -90,8 +97,9 @@ public class ProfileDAO {
     // @TODO don't do this!!! Use auto increment in database instead.
     public int getNextID() { //Returns true if email already exists in system
         try {
+            SQLDatabaseIO db = getDb();
             db.connect();
-            ResultSet rs = db.query("SELECT MAX(idUser) AS max FROM user", new String[] {});
+            ResultSet rs = db.query("SELECT MAX(idUser) AS max FROM profile", new String[] {});
             rs.next();
             int max = rs.getInt("max");
             rs.close();
@@ -109,8 +117,9 @@ public class ProfileDAO {
     public ProfileDTO createUser(ProfileDTO dto){
         try {
             dto.setId(getNextID()); //Get ID assigned
+            SQLDatabaseIO db = getDb();
             db.connect();
-            db.update("INSERT INTO user (idUser, firstName, secondName, email, phone, passHash, salt) VALUES (?,?,?,?,?,?,?)",
+            db.update("INSERT INTO profile (idUser, firstName, secondName, email, phone, passHash, salt) VALUES (?,?,?,?,?,?,?)",
                     new String[]{dto.getId()+"",dto.getFirstName(),dto.getLastName(),dto.getEmail(),dto.getPhone()+"",dto.getPassHash(),dto.getSalt()});
 
             ProfileDTO user = getProfileByEmail(dto.getEmail());
@@ -125,12 +134,6 @@ public class ProfileDAO {
 
     }
 
-
-
-    public boolean getConnected() throws SQLException {
-        db.connect();
-        return true;
-    }
 
     private void setUser(ResultSet rs, ProfileDTO user) throws SQLException { //TODO implement background
         user.setId(rs.getInt("idUser"));

@@ -13,12 +13,39 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EventDAO {
-    private final SQLDatabaseIO db = new SQLDatabaseIO("kamel", "dreng", "runerne.dk", 8003);
+    private SQLDatabaseIO getDb() {
+        return new SQLDatabaseIO("ybyfqrmupcyoxk", "11e2c72d61349e7579224313c650c39ef21fea976dea1428f0fe38201b624e28", "ec2-52-214-178-113.eu-west-1.compute.amazonaws.com", 5432);
+    }
+
+    //private final SQLDatabaseIO db = new SQLDatabaseIO("ybyfqrmupcyoxk", "11e2c72d61349e7579224313c650c39ef21fea976dea1428f0fe38201b624e28", "ec2-52-214-178-113.eu-west-1.compute.amazonaws.com", 5432);
+
+    public List<EventDTO> getCurrentEvents() {
+        try {
+            SQLDatabaseIO db = getDb();
+            db.connect();
+            ResultSet rs = db.query("SELECT * FROM events where endDate >= NOW() + INTERVAL '1 DAY' ORDER BY startDate DESC;", new String[] {});
+            List<EventDTO> eventList = new ArrayList<>();
+            while (rs.next()) {
+                EventDTO eventDTO = new EventDTO();
+                setEvent(rs, eventDTO);
+                eventList.add(eventDTO);
+            }
+            rs.close();
+            db.close();
+            return eventList;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB with event");
+            //throw new SQLException("Error in Database");
+        }
+    }
 
     public List<EventDTO> getAllEvents() {
         try {
+            SQLDatabaseIO db = getDb();
             db.connect();
-            ResultSet rs = db.query("SELECT * FROM companiondb.events where startDate >= now();", new String[] {});
+            ResultSet rs = db.query("SELECT * FROM events ORDER BY startDate DESC;", new String[] {});
             List<EventDTO> eventList = new ArrayList<>();
             while (rs.next()) {
                 EventDTO eventDTO = new EventDTO();
@@ -48,9 +75,10 @@ public class EventDAO {
 
     public EventDTO createEvent(EventDTO dto) {
         try {
+            SQLDatabaseIO db = getDb();
             db.connect();
             db.update("START TRANSACTION;",new String[]{});
-            db.update("INSERT INTO companiondb.events (name, startDate, endDate, address, info, hyperlink) VALUES (?,?,?,?,?, ?)",
+            db.update("INSERT INTO events (name, startDate, endDate, address, info, hyperlink) VALUES (?,?,?,?,?, ?)",
                     new String[] {dto.getName()+"",dto.getStartDate()+"",dto.getEndDate()+"",dto.getAddress()+"",dto.getInfo()+"",dto.getHyperlink()+""});
             db.update("COMMIT", new String[]{});
             db.close();
@@ -66,8 +94,9 @@ public class EventDAO {
 
     public EventDTO editEvent(EventDTO dto) {
         try {
+            SQLDatabaseIO db = getDb();
             db.connect();
-            db.update("UPDATE companiondb.events SET " +
+            db.update("UPDATE events SET " +
                     "name = ?, " +
                     "startDate = ?, " +
                     "endDate = ?, " +
@@ -83,7 +112,7 @@ public class EventDAO {
                     dto.getHyperlink()+"",
                     dto.getEventID()+""});
             db.close();
-            System.out.println(dto.getStartDate());
+            //System.out.println(dto.getStartDate());
             return dto;
 
         } catch (SQLException e) {

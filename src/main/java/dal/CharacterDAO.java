@@ -13,7 +13,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CharacterDAO {
-    private final SQLDatabaseIO db = new SQLDatabaseIO("kamel", "dreng", "runerne.dk", 8003);
+    private SQLDatabaseIO getDb() {
+        return new SQLDatabaseIO("ybyfqrmupcyoxk", "11e2c72d61349e7579224313c650c39ef21fea976dea1428f0fe38201b624e28", "ec2-52-214-178-113.eu-west-1.compute.amazonaws.com", 5432);
+    }
+
+    //private final SQLDatabaseIO db = new SQLDatabaseIO("ybyfqrmupcyoxk", "11e2c72d61349e7579224313c650c39ef21fea976dea1428f0fe38201b624e28", "ec2-52-214-178-113.eu-west-1.compute.amazonaws.com", 5432);
     InventoryDAO inventoryDAO = new InventoryDAO();
     RaceDAO raceDAO = new RaceDAO();
     AbilityDAO abilityDAO = new AbilityDAO();
@@ -22,8 +26,9 @@ public class CharacterDAO {
 
     public List<CharacterDTO> getCharactersByUserID(int userID){
         try {
+            SQLDatabaseIO db = getDb();
             db.connect();
-            ResultSet rs = db.query("SELECT * FROM companiondb.characterInfoView WHERE iduser = ?", new String[] {userID+""});
+            ResultSet rs = db.query("SELECT * FROM characterInfoView WHERE iduser = ?", new String[] {String.valueOf(userID)});
             List<CharacterDTO> charList = new ArrayList<>();
             while (rs.next()) {
                 CharacterDTO character = new CharacterDTO();
@@ -43,9 +48,15 @@ public class CharacterDAO {
 
     public List<CharacterDTO> getCharactersByEventID(int eventID, int checkedIn){
         try {
+            SQLDatabaseIO db = getDb();
+            String check = "false";
+            if (checkedIn == 1) {
+                check = "true";
+            }
             db.connect();
-            ResultSet rs = db.query("SELECT * FROM companiondb.characterInfoView inner join companiondb.eventAttendancyList" +
-                    " on companiondb.eventAttendancyList.idcharacter = companiondb.characterInfoView.idcharacter where companiondb.eventAttendancyList.idevent = ? and eventAttendancyList.checkIn = ?;", new String[] {eventID+"",checkedIn+""});
+            ResultSet rs = db.query("SELECT * FROM characterInfoView inner join eventAttendancyList" +
+                    " on eventAttendancyList.idcharacter = characterInfoView.idcharacter where eventAttendancyList.idevent = ? and eventAttendancyList.checkIn = ?;",
+                    new String[] {eventID+"",check});
             List<CharacterDTO> charList = new ArrayList<>();
             while (rs.next()) {
                 CharacterDTO character = new CharacterDTO();
@@ -67,8 +78,9 @@ public class CharacterDAO {
 
     public CharacterDTO insertKrysling(int characterid, int race1id, int race2id){
         try {
+            SQLDatabaseIO db = getDb();
             db.connect();
-            db.update("INSERT INTO companiondb.krysling (idcharacter, race1, race2) " +
+            db.update("INSERT INTO krysling (idcharacter, race1, race2) " +
                     "VALUES (?, ?, ?)", new String[] {characterid+"", race1id+"", race2id+""});
             db.close();
             return getCharacterByID(characterid);
@@ -82,8 +94,9 @@ public class CharacterDAO {
 
     public List<RaceDTO> updateKrysling(int characterid, int race1id, int race2id){
         try {
+            SQLDatabaseIO db = getDb();
             db.connect();
-            db.update("UPDATE companiondb.krysling SET race1 = ?, race2 = ? WHERE idcharacter = ?",
+            db.update("UPDATE krysling SET race1 = ?, race2 = ? WHERE idcharacter = ?",
                     new String[] { race1id+"", race2id+"", characterid+""});
             db.close();
             RaceDAO raceDAO = new RaceDAO();
@@ -98,8 +111,9 @@ public class CharacterDAO {
 
     public CharacterDTO deleteKrysling(int characterid){
         try {
+            SQLDatabaseIO db = getDb();
             db.connect();
-            db.update("DELETE FROM companiondb.krysling WHERE idcharacter = ?", new String[] {characterid+""});
+            db.update("DELETE FROM krysling WHERE idcharacter = ?", new String[] {characterid+""});
             db.close();
             return getCharacterByID(characterid);
 
@@ -112,8 +126,9 @@ public class CharacterDAO {
 
     public CharacterDTO getCharacterByID(int characterID){
         try {
+            SQLDatabaseIO db = getDb();
             db.connect();
-            ResultSet rs = db.query("SELECT * FROM companiondb.characterInfoView WHERE idcharacter = ?", new String[] {characterID+""});
+            ResultSet rs = db.query("SELECT * FROM characterInfoView WHERE idcharacter = ?", new String[] {characterID+""});
             List<CharacterDTO> charList = new ArrayList<>();
             rs.next();
             CharacterDTO character = new CharacterDTO();
@@ -132,8 +147,9 @@ public class CharacterDAO {
  //TODO remove
     public CharacterDTO updateCharacter(CharacterDTO dto){
         try {
+            SQLDatabaseIO db = getDb();
             db.connect();
-            db.update("UPDATE companiondb.character SET " +
+            db.update("UPDATE character SET " +
                     "iduser = ?, " +
                     "namecharacter = ?, " +
                     "idrace = ?, " +
@@ -152,6 +168,7 @@ public class CharacterDAO {
                             dto.getHealth()+"",
                             dto.getBackground()+"",
                             dto.getIdcharacter()+""});
+            db.close();
             return dto;
 
         } catch (SQLException e) {
@@ -164,9 +181,10 @@ public class CharacterDAO {
     public CharacterDTO createCharacter(CharacterDTO dto){
         try {
             dto.setIdcharacter(getNextID()); //Get ID assigned
+            SQLDatabaseIO db = getDb();
             db.connect();
             db.update("START TRANSACTION;",new String[]{});
-            db.update("INSERT INTO companiondb.character (idcharacter, iduser, " +
+            db.update("INSERT INTO character (idcharacter, iduser, " +
                     "namecharacter, idrace, age, background) VALUES (?, ?, ?, ?, ?, ?)",new String[] {dto.getIdcharacter()+"",dto.getIduser()+"",dto.getName(),dto.getIdrace()+"",dto.getAge()+"",dto.getBackground()});
             db.update("COMMIT;", new String[]{});
             db.close();
@@ -199,8 +217,9 @@ public class CharacterDAO {
 
     public CharacterDTO deleteCharacter(int characterid){
         try {
+            SQLDatabaseIO db = getDb();
             db.connect();
-            db.update("DELETE FROM companiondb.character WHERE idcharacter = ?",new String[] {characterid+""});
+            db.update("DELETE FROM character WHERE idcharacter = ?",new String[] {characterid+""});
             db.close();
             CharacterDTO character = new CharacterDTO();
             character.setIdcharacter(1);
@@ -229,8 +248,9 @@ public class CharacterDAO {
 
     public int getNextID(){ //Returns true if email already exists in system
         try {
+            SQLDatabaseIO db = getDb();
             db.connect();
-            ResultSet rs = db.query("SELECT MAX(idCharacter) AS max FROM companiondb.character;",new String[]{});
+            ResultSet rs = db.query("SELECT MAX(idCharacter) AS max FROM character;",new String[]{});
             rs.next();
             int max = rs.getInt("max");
             rs.close();
