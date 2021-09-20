@@ -75,11 +75,12 @@ public class EventDAO {
 
     public EventDTO createEvent(EventDTO dto) {
         try {
+            int nextID = getNextID();
             SQLDatabaseIO db = getDb();
             db.connect();
             db.update("START TRANSACTION;",new String[]{});
-            db.update("INSERT INTO events (name, startDate, endDate, address, info, hyperlink) VALUES (?,?,?,?,?, ?)",
-                    new String[] {dto.getName()+"",dto.getStartDate()+"",dto.getEndDate()+"",dto.getAddress()+"",dto.getInfo()+"",dto.getHyperlink()+""});
+            db.update("INSERT INTO events (idevents, name, startDate, endDate, address, info, hyperlink) VALUES (?,?,?,?,?,?, ?)",
+                    new String[] {String.valueOf(nextID), dto.getName()+"",dto.getStartDate()+"",dto.getEndDate()+"",dto.getAddress()+"",dto.getInfo()+"",dto.getHyperlink()+""});
             db.update("COMMIT", new String[]{});
             db.close();
 
@@ -119,7 +120,23 @@ public class EventDAO {
             e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB: creating event");
         }
+    }
 
+    public int getNextID(){
+        try {
+            SQLDatabaseIO db = getDb();
+            db.connect();
+            ResultSet rs = db.query("SELECT MAX(idevents) AS max FROM events;", new String[]{});
+            rs.next();
+            int max = rs.getInt("max");
+            rs.close();
+            db.close();
+            return max + 1;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error in DB with next idevents");
+            //throw new SQLException("Error in Database");
+        }
     }
 
 }
